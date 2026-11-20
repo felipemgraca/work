@@ -119,17 +119,6 @@
     "status": "read"
   },
   {
-    "slug": "getting-things-done",
-    "title": "Getting Things Done",
-    "author": "David Allen",
-    "year": 2001,
-    "genre": "Productivity",
-    "synopsis": "The classic system for stress-free productivity: capture everything, clarify what it means, organize it and review it regularly.",
-    "format": "Libby",
-    "image": "images/covers/getting-things-done.jpg",
-    "status": "reading"
-  },
-  {
     "slug": "deep-work",
     "title": "Deep Work",
     "author": "Cal Newport",
@@ -138,28 +127,7 @@
     "synopsis": "Rules for focused success in a distracted world: why the ability to concentrate without distraction is rare, valuable and trainable.",
     "format": "Libby",
     "image": "images/covers/deep-work.jpg",
-    "status": "reading"
-  },
-  {
-    "slug": "sense-of-style",
-    "title": "The Sense of Style",
-    "author": "Steven Pinker",
-    "year": 2014,
-    "genre": "Writing",
-    "synopsis": "A cognitive scientist's guide to clear, elegant writing in the 21st century, drawing on linguistics and psychology instead of rigid rules.",
-    "format": "Libby",
-    "image": "images/covers/sense-of-style.jpg",
-    "status": "reading"
-  },
-  {
-    "slug": "storynomics",
-    "title": "Storynomics",
-    "author": "Robert McKee & Thomas Gerace",
-    "year": 2018,
-    "genre": "Marketing",
-    "synopsis": "Story-driven marketing in the post-advertising world: how to use the principles of great storytelling to build brands people care about.",
-    "format": "Libby",
-    "image": "images/covers/storynomics.jpg",
-    "status": "reading"
+    "status": "reading",
+    "rating": 5
   }
 ]
