@@ -67,7 +67,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       .attr('markerWidth', 7).attr('markerHeight', 7).attr('markerUnits', 'userSpaceOnUse').attr('orient', 'auto')
       .append('path').attr('d', 'M0,0L10,5L0,10z').attr('fill', '#a88bfa');
 
-    const DEFAULTS: any = { arrows: false, fade: 0, nodeSize: 1, linkThickness: 1, center: 0.3, repel: 10, linkForce: 0.35, linkDistance: 100 };
+    const DEFAULTS: any = { arrows: false, fade: 0, nodeSize: 0.4, linkThickness: 1, center: 0.3, repel: 10, linkForce: 0.35, linkDistance: 100 };
     const S: any = { ...DEFAULTS };
     let zk = 1;
     let hl: Set<string> | null = null;
