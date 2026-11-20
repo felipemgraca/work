@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import { url, profile } from '../lib';
+// Home headline is set here (differs slightly from the LinkedIn headline used elsewhere).
+const lines = [
+  'Analytics Manager',
+  'VML (USA WPP @ Ford)',
+  'Building marketing intelligence & AI-BI solutions',
+  'Power BI, Fabric, Snowflake, Databricks',
+  'Python, SQL, DAX',
+];
+---
+<Base>
+  <div class="container">
+    <section>
+      <p class="eyebrow">{profile.location}</p>
+      <h1 class="hero__name">Felipe Graca</h1>
+      <p class="hero__headline">
+        {lines.map((l, i) => (<span class="hl">{l}{i < lines.length - 1 && <span class="sep">/</span>}</span>))}
+      </p>
+      <p class="actions">
+        <a class="btn btn--primary" href={url('/knowledge-tree/branches/')}>Explore the knowledge tree</a>
+        <a class="btn btn--secondary" href={url('/resume/')}>View resume</a>
+      </p>
+    </section>
+  </div>
+</Base>

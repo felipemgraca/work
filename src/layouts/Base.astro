@@ -1,0 +1,71 @@
+---
+import '../styles/global.css';
+import { url, site } from '../lib';
+interface Props { title?: string; description?: string; section?: string }
+const { title, description = 'Felipe Graca: analytics, business intelligence and a public knowledge garden.', section = '' } = Astro.props;
+const full = title ? `${title} | ${site.name}` : site.name;
+const path = Astro.url.pathname;
+const tree = [
+  { href: '/knowledge-tree/fruits/', label: 'Fruits (Essays)' },
+  { href: '/knowledge-tree/branches/', label: 'Branches (Notes Graph)' },
+  { href: '/knowledge-tree/roots/', label: 'Roots (References)' },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{full}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+    <meta property="og:title" content={full} />
+    <meta property="og:description" content={description} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="wordmark" href={url('/')} aria-label="Felipe Graca, home">Felipe Graca</a>
+        <nav class="primary-nav" aria-label="Primary">
+          <ul>
+            <li class="has-menu">
+              <button type="button" class="nav-link nav-button" id="tree-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="tree-menu" aria-current={section === 'knowledge' ? 'page' : undefined}>
+                Knowledge Tree <span class="caret" aria-hidden="true">▾</span>
+              </button>
+              <ul class="menu" id="tree-menu" hidden>
+                {tree.map((t) => (
+                  <li><a href={url(t.href)} aria-current={path.startsWith(url(t.href)) ? 'page' : undefined}>{t.label}</a></li>
+                ))}
+              </ul>
+            </li>
+            <li><a class="nav-link" href={url('/resume/')} aria-current={section === 'resume' ? 'page' : undefined}>Resume</a></li>
+            <li><a class="nav-link" href={url('/my-story/')} aria-current={section === 'my-story' ? 'page' : undefined}>My Story</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <script>
+      const btn = document.getElementById('tree-toggle') as HTMLButtonElement;
+      const menu = document.getElementById('tree-menu') as HTMLElement;
+      const li = btn.closest('.has-menu') as HTMLElement;
+      const set = (open: boolean) => { btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open; };
+      const canHover = matchMedia('(hover: hover)').matches;
+      btn.addEventListener('click', () => set(canHover ? true : menu.hidden));
+      if (canHover) {
+        li.addEventListener('mouseenter', () => set(true));
+        li.addEventListener('mouseleave', () => set(false));
+      }
+      document.addEventListener('click', (e) => { if (!li.contains(e.target as Node)) set(false); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { set(false); btn.focus(); } });
+    </script>
+    <main id="main" tabindex="-1"><slot /></main>
+    <footer class="site-footer">
+      <div class="container">
+        <span>Felipe Graca</span>
+        <span>Built from my Obsidian vault</span>
+      </div>
+    </footer>
+  </body>
+</html>

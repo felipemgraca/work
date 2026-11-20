@@ -1,0 +1,26 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { url, pathFor, writing, fmtDate } from '../../../lib';
+---
+<Base title="Fruits (Essays)" section="knowledge">
+  <div class="feed-wrap">
+    <p class="eyebrow">Knowledge Tree</p>
+    <h1 class="page-title">Fruits (Essays)</h1>
+    <p class="page-lede">Essays and posts I finish and publish.</p>
+    <ul class="feed">
+      {writing.map((w: any) => (
+        <li class="feed-item">
+          {w.date && <p class="feed-date">{fmtDate(w.date)}</p>}
+          <a class={`essay-card${w.cover ? ' has-cover' : ''}`} href={url(pathFor('posts', w.slug))}>
+            <div class="essay-card__cover" aria-hidden="true" style={w.cover ? `background-image: url(${w.cover})` : undefined}></div>
+            <div class="essay-card__body">
+              <span class="essay-card__pub">The Knowledge Tree</span>
+              <h2 class="essay-card__title">{w.title}</h2>
+              {w.subtitle && <p class="essay-card__subtitle">{w.subtitle}</p>}
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>

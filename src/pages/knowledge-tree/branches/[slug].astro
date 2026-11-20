@@ -1,0 +1,23 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { url, pathFor, notes as items } from '../../../lib';
+export function getStaticPaths() {
+  return items.map((x: any) => ({ params: { slug: x.slug }, props: { item: x } }));
+}
+const { item } = Astro.props;
+---
+<Base title={item.title} section="knowledge">
+  <article class="prose-wrap">
+    <a class="back" href={url('/knowledge-tree/branches/')}>← Branches (Notes Graph)</a>
+    <h1 class="page-title">{item.title}</h1>
+    <div class="prose" style="margin-top:2rem" set:html={item.html} />
+    {item.backlinks.length > 0 && (
+      <aside class="backlinks">
+        <h2>Linked from</h2>
+        <ul>
+          {item.backlinks.map((b: any) => <li><a href={url(pathFor(b.kind, b.slug))}>{b.title}</a></li>)}
+        </ul>
+      </aside>
+    )}
+  </article>
+</Base>

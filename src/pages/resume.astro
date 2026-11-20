@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import { resumeHtml, profile, site } from '../lib';
+---
+<Base title="Resume" section="resume" description={`Resume of Felipe Graca. ${profile.headline}`}>
+  <div class="prose-wrap">
+    <p class="eyebrow">Resume</p>
+    <h1 class="page-title">Felipe Graca</h1>
+    <p class="page-lede">{profile.headline}<br />{profile.location} · <a href={site.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a></p>
+    <div class="prose resume">
+      <h2>About</h2>
+      <div set:html={profile.aboutHtml} />
+      <div set:html={resumeHtml} />
+    </div>
+  </div>
+</Base>

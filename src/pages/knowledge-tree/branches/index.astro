@@ -1,0 +1,201 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { url, pathFor, graph, notes } from '../../../lib';
+const nodes = graph.nodes.map((n: any) => ({ ...n, href: url(pathFor(n.kind, n.slug)) }));
+const payload = JSON.stringify({ nodes, links: graph.links });
+---
+<Base title="Branches (Notes Graph)" section="knowledge">
+  <div class="container">
+    <p class="eyebrow">Knowledge Tree</p>
+    <h1 class="page-title">Branches (Notes Graph)</h1>
+    <p class="page-lede">My slip-box as a knowledge graph. Each dot is an idea in my own words; lines are links between them. Click a dot to read it.</p>
+    <div class="graph-toolbar">
+      <input class="graph-search" id="graph-search" type="search" placeholder="Search notes…" aria-label="Search notes" />
+      <div class="legend">
+        <span class="l-note">Note</span>
+        <button type="button" id="fit-view" class="toggle">Reset view</button>
+        <button type="button" id="toggle-books" class="toggle" aria-pressed="false">Show book references</button>
+      </div>
+    </div>
+    <div class="graph-shell graph-wide">
+      <svg id="graph" role="img" aria-label="Knowledge graph of notes"></svg>
+      <div class="graph-tip" id="graph-tip"></div>
+    </div>
+    <p class="graph-hint">Drag to move, hold Ctrl or ⌘ and scroll (or pinch) to zoom, hover to highlight connections.</p>
+    <section class="node-list" aria-labelledby="all-notes">
+      <h2 id="all-notes" class="eyebrow">All notes</h2>
+      <ul class="entry-list">
+        {notes.map((n: any) => (
+          <li><a href={url(pathFor('notes', n.slug))}><span class="entry-title">{n.title}</span></a></li>
+        ))}
+      </ul>
+    </section>
+  </div>
+  <script id="graph-data" type="application/json" set:html={payload}></script>
+  <script>
+    import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide, forceX, forceY } from 'd3-force';
+    import { select } from 'd3-selection';
+    import { zoom, zoomIdentity } from 'd3-zoom';
+    import { drag } from 'd3-drag';
+
+    const data = JSON.parse(document.getElementById('graph-data')!.textContent!);
+    const svgEl = document.getElementById('graph') as unknown as SVGSVGElement;
+    const tip = document.getElementById('graph-tip')!;
+    const toggle = document.getElementById('toggle-books') as HTMLButtonElement;
+    const shell = svgEl.parentElement!;
+    const allNodes: any[] = data.nodes.map((n: any) => ({ ...n }));
+    const byId = new Map(allNodes.map((n) => [n.id, n]));
+    const allLinks: any[] = data.links.map((l: any) => ({ source: l.source, target: l.target }));
+
+    let showBooks = false;
+    let nodes: any[] = [];
+    let links: any[] = [];
+    let nbrs = new Map<string, Set<string>>();
+
+    const r = (n: any) => 3.5 + Math.sqrt(n.degree) * 1.5;
+    const svg = select(svgEl);
+    const root = svg.append('g');
+    const linkLayer = root.append('g').attr('stroke', '#6c31e3').attr('stroke-opacity', 0.45);
+    const nodeLayer = root.append('g');
+    const labelLayer = root.append('g');
+    let link: any, node: any, labels: any;
+
+    const sim = forceSimulation()
+      .force('link', forceLink().id((d: any) => d.id).distance(100).strength(0.35))
+      .force('charge', forceManyBody().strength(-800))
+      .force('collide', forceCollide().radius(72).strength(1))
+      .force('center', forceCenter(0, 0))
+      .force('x', forceX(0).strength(0.02))
+      .force('y', forceY(0.0).strength(0.13));
+
+    function size() {
+      const { width, height } = svgEl.getBoundingClientRect();
+      svg.attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`);
+    }
+    size();
+    window.addEventListener('resize', size);
+
+    const dragger: any = (drag() as any)
+      .on('start', (e: any, d: any) => { if (!e.active) sim.alphaTarget(0.25).restart(); d.fx = d.x; d.fy = d.y; })
+      .on('drag', (e: any, d: any) => { d.fx = e.x; d.fy = e.y; })
+      .on('end', (e: any, d: any) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; });
+
+    function wrap(text: string, max: number, maxLines = 4): string[] {
+      const words = text.split(' ');
+      const lines: string[] = [];
+      let cur = '';
+      for (const w of words) {
+        if ((cur + ' ' + w).trim().length > max && cur) { lines.push(cur); cur = w; } else cur = (cur + ' ' + w).trim();
+      }
+      if (cur) lines.push(cur);
+      if (lines.length > maxLines) { lines.length = maxLines; lines[maxLines - 1] = lines[maxLines - 1].replace(/\s*\S*$/, '') + '…'; }
+      return lines;
+    }
+
+    function fit(animate = true) {
+      const { width, height } = svgEl.getBoundingClientRect();
+      const xs = nodes.map((n) => n.x), ys = nodes.map((n) => n.y);
+      if (!xs.length || xs.some((x) => Number.isNaN(x))) return;
+      const padX = 80, padY = 60;
+      const x0 = Math.min(...xs) - padX, x1 = Math.max(...xs) + padX;
+      const y0 = Math.min(...ys) - padY, y1 = Math.max(...ys) + padY + 40;
+      const k = Math.min(width / (x1 - x0), height / (y1 - y0), 1.6);
+      const tx = -((x0 + x1) / 2) * k, ty = -((y0 + y1) / 2) * k;
+      const target = zoomIdentity.translate(tx, ty).scale(k);
+      if (animate) (svg as any).transition().duration(450).call(zoomer.transform, target); else (svg as any).call(zoomer.transform, target);
+    }
+
+    function highlight(ids: Set<string> | null) {
+      node.select('circle').attr('opacity', (d: any) => (!ids || ids.has(d.id) ? 1 : 0.12));
+      labels.attr('opacity', (d: any) => (!ids || ids.has(d.id) ? 1 : 0.12));
+      link.attr('stroke-opacity', (d: any) => (!ids ? 0.45 : ids.has(d.source.id) && ids.has(d.target.id) ? 0.95 : 0.05))
+        .attr('stroke', (d: any) => (ids && ids.has(d.source.id) && ids.has(d.target.id) ? '#a88bfa' : '#6c31e3'));
+    }
+
+    function update() {
+      const visible = new Set(allNodes.filter((n) => showBooks || n.kind !== 'references').map((n) => n.id));
+      const endId = (e: any) => (typeof e === 'string' ? e : e.id);
+      links = allLinks
+        .map((l) => ({ source: endId(l.source), target: endId(l.target) }))
+        .filter((l) => visible.has(l.source) && visible.has(l.target));
+      nodes = allNodes.filter((n) => visible.has(n.id));
+      nodes.forEach((n) => (n.degree = 0));
+      links.forEach((l) => { byId.get(l.source).degree++; byId.get(l.target).degree++; });
+      nbrs = new Map(nodes.map((n) => [n.id, new Set([n.id])]));
+      links.forEach((l) => { nbrs.get(l.source)!.add(l.target); nbrs.get(l.target)!.add(l.source); });
+
+      link = linkLayer.selectAll('line').data(links).join('line').attr('stroke-width', 1);
+      node = nodeLayer.selectAll('a').data(nodes, (d: any) => d.id).join(
+        (enter: any) => {
+          const a = enter.append('a').attr('href', (d: any) => d.href).style('cursor', 'pointer');
+          a.append('circle');
+          return a;
+        },
+      );
+      node.select('circle')
+        .attr('r', r)
+        .attr('fill', (d: any) => (d.kind === 'references' ? '#000' : '#a88bfa'))
+        .attr('stroke', (d: any) => (d.kind === 'references' ? '#fff' : '#d9ccff'))
+        .attr('stroke-width', (d: any) => (d.kind === 'references' ? 2 : 1));
+      node.call(dragger);
+      node
+        .on('mouseenter', (_e: any, d: any) => { highlight(nbrs.get(d.id)!); tip.textContent = d.title; tip.style.opacity = '1'; })
+        .on('mousemove', (e: any) => {
+          const b = shell.getBoundingClientRect();
+          const x = Math.min(e.clientX - b.left + 14, b.width - tip.offsetWidth - 8);
+          tip.style.left = x + 'px'; tip.style.top = e.clientY - b.top + 14 + 'px';
+        })
+        .on('mouseleave', () => { highlight(null); tip.style.opacity = '0'; });
+      labels = labelLayer.selectAll('text').data(nodes, (d: any) => d.id).join('text')
+        .attr('text-anchor', 'middle').attr('font-size', 13).attr('fill', '#d8d3ea')
+        .attr('stroke', '#000').attr('stroke-width', 3).attr('stroke-linejoin', 'round').attr('paint-order', 'stroke')
+        .style('pointer-events', 'none');
+      labels.each(function (d: any) {
+        const t = select(this as SVGTextElement);
+        t.selectAll('tspan').remove();
+        wrap(d.title, 24).forEach((line, i) => t.append('tspan').attr('x', 0).attr('dy', i === 0 ? 0 : 15).text(line));
+      });
+
+      sim.nodes(nodes);
+      (sim.force('link') as any).links(links);
+      sim.stop();
+      nodes.forEach((n, i) => { const a = i * 2.4; n.x = Math.cos(a) * (40 + i * 18); n.y = Math.sin(a) * (30 + i * 11); n.vx = 0; n.vy = 0; });
+      sim.alpha(1);
+      for (let i = 0; i < 500; i++) sim.tick();
+      draw();
+      fit(false);
+      sim.alpha(0.001);
+      highlight(null);
+    }
+
+    sim.stop();
+    function draw() {
+      link.attr('x1', (d: any) => d.source.x).attr('y1', (d: any) => d.source.y).attr('x2', (d: any) => d.target.x).attr('y2', (d: any) => d.target.y);
+      node.attr('transform', (d: any) => `translate(${d.x},${d.y})`);
+      labels.attr('transform', (d: any) => `translate(${d.x},${d.y + r(d) + 14})`);
+    }
+    sim.on('tick', draw);
+
+    const zoomer: any = (zoom() as any).scaleExtent([0.4, 4]).filter((e: any) => (e.type === 'wheel' ? e.ctrlKey || e.metaKey : !e.button)).on('zoom', (e: any) => root.attr('transform', e.transform));
+    (svg as any).call(zoomer).on('dblclick.zoom', null);
+    
+
+    toggle.addEventListener('click', () => {
+      showBooks = !showBooks;
+      toggle.setAttribute('aria-pressed', String(showBooks));
+      toggle.textContent = showBooks ? 'Hide book references' : 'Show book references';
+      update();
+    });
+    document.getElementById('fit-view')!.addEventListener('click', () => fit(true));
+
+    document.getElementById('graph-search')!.addEventListener('input', (e) => {
+      const q = (e.target as HTMLInputElement).value.trim().toLowerCase();
+      highlight(q ? new Set(nodes.filter((n) => n.title.toLowerCase().includes(q)).map((n) => n.id)) : null);
+    });
+
+    update();
+    requestAnimationFrame(() => fit(false));
+    window.addEventListener('load', () => fit(false));
+    
+  </script>
+</Base>

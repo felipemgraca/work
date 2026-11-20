@@ -1,0 +1,19 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { url, pathFor, references } from '../../../lib';
+const books = [...references]
+  .map((r: any) => ({ ...r, count: r.backlinks.length }))
+  .sort((a: any, b: any) => b.count - a.count || a.title.localeCompare(b.title));
+---
+<Base title="Roots (References)" section="knowledge">
+  <div class="prose-wrap">
+    <p class="eyebrow">Knowledge Tree</p>
+    <h1 class="page-title">Roots (References)</h1>
+    <p class="page-lede">Books I have read and highlighted, ordered by how many of my notes cite them.</p>
+    <ul class="entry-list">
+      {books.map((r: any) => (
+        <li><a href={url(pathFor('references', r.slug))}><span class="entry-title">{r.title}</span><span class="entry-meta">({r.count} {r.count === 1 ? 'note' : 'notes'})</span></a></li>
+      ))}
+    </ul>
+  </div>
+</Base>

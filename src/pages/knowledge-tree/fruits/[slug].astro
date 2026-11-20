@@ -1,0 +1,17 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { url, writing, fmtDate } from '../../../lib';
+export function getStaticPaths() {
+  return writing.map((w: any) => ({ params: { slug: w.slug }, props: { post: w } }));
+}
+const { post } = Astro.props;
+---
+<Base title={post.title} section="knowledge">
+  <article class="prose-wrap">
+    <a class="back" href={url('/knowledge-tree/fruits/')}>← Fruits (Essays)</a>
+    <h1 class="page-title">{post.title}</h1>
+    {post.subtitle && <p class="page-lede">{post.subtitle}</p>}
+    {post.date && <p class="feed-date" style="margin:-1.5rem 0 2rem">{fmtDate(post.date)}</p>}
+    <div class="prose" set:html={post.html} />
+  </article>
+</Base>
