@@ -17,8 +17,10 @@ const payload = JSON.stringify({ nodes, links: graph.links });
         <button type="button" id="toggle-books" class="toggle" aria-pressed="false">Show book references</button>
       </div>
     </div>
-    <div class="graph-shell graph-wide">
+    <div class="graph-shell">
       <svg id="graph" role="img" aria-label="Knowledge graph of notes"></svg>
+      <button type="button" class="toggle graph-gear" id="gp-toggle" aria-expanded="false" aria-controls="gp">Settings</button>
+      <div class="graph-panel" id="gp" hidden></div>
       <div class="graph-tip" id="graph-tip"></div>
     </div>
     <p class="graph-hint">Drag to move, hold Ctrl or ⌘ and scroll (or pinch) to zoom, hover to highlight connections.</p>
@@ -52,12 +54,20 @@ const payload = JSON.stringify({ nodes, links: graph.links });
     let links: any[] = [];
     let nbrs = new Map<string, Set<string>>();
 
-    const r = (n: any) => 3.5 + Math.sqrt(n.degree) * 1.5;
+    const r = (n: any) => (3.5 + Math.sqrt(n.degree) * 1.5) * S.nodeSize;
     const svg = select(svgEl);
     const root = svg.append('g');
     const linkLayer = root.append('g').attr('stroke', '#6c31e3').attr('stroke-opacity', 0.45);
     const nodeLayer = root.append('g');
     const labelLayer = root.append('g');
+    svg.append('defs').append('marker').attr('id', 'arrow').attr('viewBox', '0 0 10 10').attr('refX', 10).attr('refY', 5)
+      .attr('markerWidth', 7).attr('markerHeight', 7).attr('markerUnits', 'userSpaceOnUse').attr('orient', 'auto')
+      .append('path').attr('d', 'M0,0L10,5L0,10z').attr('fill', '#a88bfa');
+
+    const DEFAULTS: any = { arrows: false, fade: 0, nodeSize: 1, linkThickness: 1, center: 0.3, repel: 10, linkForce: 0.35, linkDistance: 100 };
+    const S: any = { ...DEFAULTS };
+    let zk = 1;
+    let hl: Set<string> | null = null;
     let link: any, node: any, labels: any;
 
     const sim = forceSimulation()
@@ -73,7 +83,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       svg.attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`);
     }
     size();
-    window.addEventListener('resize', size);
+    window.addEventListener('resize', () => { size(); fit(false); });
 
     const dragger: any = (drag() as any)
       .on('start', (e: any, d: any) => { if (!e.active) sim.alphaTarget(0.25).restart(); d.fx = d.x; d.fy = d.y; })
@@ -105,9 +115,21 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       if (animate) (svg as any).transition().duration(450).call(zoomer.transform, target); else (svg as any).call(zoomer.transform, target);
     }
 
+    function applyLabels() {
+      if (!labels) return;
+      const f = Math.max(0, Math.min(1, (zk - S.fade * 2) / 0.3));
+      labels.attr('opacity', (d: any) => f * (!hl || hl.has(d.id) ? 1 : 0.12));
+    }
+    function applyStyle() {
+      if (!link) return;
+      link.attr('stroke-width', S.linkThickness).attr('marker-end', S.arrows ? 'url(#arrow)' : null);
+      node.select('circle').attr('r', r);
+      draw();
+    }
     function highlight(ids: Set<string> | null) {
+      hl = ids;
       node.select('circle').attr('opacity', (d: any) => (!ids || ids.has(d.id) ? 1 : 0.12));
-      labels.attr('opacity', (d: any) => (!ids || ids.has(d.id) ? 1 : 0.12));
+      applyLabels();
       link.attr('stroke-opacity', (d: any) => (!ids ? 0.45 : ids.has(d.source.id) && ids.has(d.target.id) ? 0.95 : 0.05))
         .attr('stroke', (d: any) => (ids && ids.has(d.source.id) && ids.has(d.target.id) ? '#a88bfa' : '#6c31e3'));
     }
@@ -124,7 +146,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       nbrs = new Map(nodes.map((n) => [n.id, new Set([n.id])]));
       links.forEach((l) => { nbrs.get(l.source)!.add(l.target); nbrs.get(l.target)!.add(l.source); });
 
-      link = linkLayer.selectAll('line').data(links).join('line').attr('stroke-width', 1);
+      link = linkLayer.selectAll('line').data(links).join('line').attr('stroke-width', S.linkThickness).attr('marker-end', S.arrows ? 'url(#arrow)' : null);
       node = nodeLayer.selectAll('a').data(nodes, (d: any) => d.id).join(
         (enter: any) => {
           const a = enter.append('a').attr('href', (d: any) => d.href).style('cursor', 'pointer');
@@ -170,13 +192,18 @@ const payload = JSON.stringify({ nodes, links: graph.links });
 
     sim.stop();
     function draw() {
-      link.attr('x1', (d: any) => d.source.x).attr('y1', (d: any) => d.source.y).attr('x2', (d: any) => d.target.x).attr('y2', (d: any) => d.target.y);
+      const end = (d: any) => {
+        if (!S.arrows) return [d.target.x, d.target.y];
+        const dx = d.target.x - d.source.x, dy = d.target.y - d.source.y, len = Math.hypot(dx, dy) || 1, off = r(d.target) + 2;
+        return [d.target.x - (dx / len) * off, d.target.y - (dy / len) * off];
+      };
+      link.attr('x1', (d: any) => d.source.x).attr('y1', (d: any) => d.source.y).attr('x2', (d: any) => end(d)[0]).attr('y2', (d: any) => end(d)[1]);
       node.attr('transform', (d: any) => `translate(${d.x},${d.y})`);
       labels.attr('transform', (d: any) => `translate(${d.x},${d.y + r(d) + 14})`);
     }
     sim.on('tick', draw);
 
-    const zoomer: any = (zoom() as any).scaleExtent([0.4, 4]).filter((e: any) => (e.type === 'wheel' ? e.ctrlKey || e.metaKey : !e.button)).on('zoom', (e: any) => root.attr('transform', e.transform));
+    const zoomer: any = (zoom() as any).scaleExtent([0.4, 4]).filter((e: any) => (e.type === 'wheel' ? e.ctrlKey || e.metaKey : !e.button)).on('zoom', (e: any) => { root.attr('transform', e.transform); zk = e.transform.k; applyLabels(); });
     (svg as any).call(zoomer).on('dblclick.zoom', null);
     
 
@@ -193,6 +220,90 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       highlight(q ? new Set(nodes.filter((n) => n.title.toLowerCase().includes(q)).map((n) => n.id)) : null);
     });
 
+    function applyForces(restart = true) {
+      (sim.force('link') as any).distance(S.linkDistance).strength(S.linkForce);
+      (sim.force('charge') as any).strength(-80 * S.repel);
+      (sim.force('x') as any).strength(S.center * 0.07);
+      (sim.force('y') as any).strength(S.center * 0.43);
+      if (restart) sim.alpha(0.6).restart();
+    }
+    let refitAfter = false;
+    sim.on('end', () => { if (refitAfter) { refitAfter = false; fit(true); } });
+    function animate() {
+      nodes.forEach((n, i) => { const a = i * 2.4; n.x = Math.cos(a) * (40 + i * 18); n.y = Math.sin(a) * (30 + i * 11); n.vx = 0; n.vy = 0; });
+      refitAfter = true;
+      sim.alpha(1).restart();
+    }
+
+    const panel = document.getElementById('gp')!;
+    const gear = document.getElementById('gp-toggle')!;
+    const inputs: Record<string, HTMLInputElement> = {};
+    const outputs: Record<string, HTMLOutputElement> = {};
+    const groups: any[] = [
+      { title: 'Display', items: [
+        { key: 'arrows', label: 'Arrows', type: 'checkbox', apply: applyStyle },
+        { key: 'fade', label: 'Text fade threshold', min: 0, max: 1, step: 0.05, apply: applyLabels },
+        { key: 'nodeSize', label: 'Node size', min: 0.4, max: 2.5, step: 0.05, apply: applyStyle },
+        { key: 'linkThickness', label: 'Link thickness', min: 0.3, max: 4, step: 0.1, apply: applyStyle },
+      ], animate: true },
+      { title: 'Forces', items: [
+        { key: 'center', label: 'Center force', min: 0, max: 1, step: 0.01, apply: () => applyForces() },
+        { key: 'repel', label: 'Repel force', min: 0, max: 20, step: 0.5, apply: () => applyForces() },
+        { key: 'linkForce', label: 'Link force', min: 0, max: 1, step: 0.01, apply: () => applyForces() },
+        { key: 'linkDistance', label: 'Link distance', min: 30, max: 300, step: 5, apply: () => applyForces() },
+      ] },
+    ];
+    const head = document.createElement('div');
+    head.className = 'gp-head';
+    const resetBtn = document.createElement('button');
+    resetBtn.type = 'button'; resetBtn.className = 'toggle'; resetBtn.textContent = 'Restore defaults';
+    head.append(resetBtn);
+    panel.append(head);
+    const fmt = (it: any, v: number) => (it.step >= 1 ? String(v) : v.toFixed(2));
+    for (const g of groups) {
+      const det = document.createElement('details');
+      det.className = 'gp-sec'; det.open = true;
+      const sum = document.createElement('summary'); sum.textContent = g.title; det.append(sum);
+      for (const it of g.items) {
+        const row = document.createElement('div'); row.className = 'gp-row';
+        const lab = document.createElement('label'); lab.textContent = it.label;
+        const inp = document.createElement('input'); inp.id = 'gp-' + it.key;
+        lab.htmlFor = inp.id;
+        if (it.type === 'checkbox') {
+          inp.type = 'checkbox'; inp.checked = S[it.key];
+          inp.addEventListener('change', () => { S[it.key] = inp.checked; it.apply(); });
+        } else {
+          inp.type = 'range'; inp.min = it.min; inp.max = it.max; inp.step = it.step; inp.value = S[it.key];
+          const out = document.createElement('output'); out.textContent = fmt(it, S[it.key]); outputs[it.key] = out; lab.append(out);
+          inp.addEventListener('input', () => { S[it.key] = Number(inp.value); out.textContent = fmt(it, S[it.key]); it.apply(); });
+        }
+        inputs[it.key] = inp;
+        row.append(lab, inp); det.append(row);
+      }
+      if (g.animate) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'toggle'; b.textContent = 'Animate';
+        b.addEventListener('click', animate);
+        det.append(b);
+      }
+      panel.append(det);
+    }
+    resetBtn.addEventListener('click', () => {
+      Object.assign(S, DEFAULTS);
+      for (const g of groups) for (const it of g.items) {
+        const inp = inputs[it.key];
+        if (it.type === 'checkbox') inp.checked = S[it.key]; else { inp.value = String(S[it.key]); outputs[it.key].textContent = fmt(it, S[it.key]); }
+      }
+      applyForces(false); update();
+    });
+    gear.addEventListener('click', () => {
+      const open = panel.hasAttribute('hidden');
+      panel.toggleAttribute('hidden', !open);
+      gear.setAttribute('aria-expanded', String(open));
+    });
+    if (window.matchMedia('(min-width: 900px)').matches) { panel.removeAttribute('hidden'); gear.setAttribute('aria-expanded', 'true'); }
+
+    applyForces(false);
     update();
     requestAnimationFrame(() => fit(false));
     window.addEventListener('load', () => fit(false));
