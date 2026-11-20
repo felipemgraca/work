@@ -23,21 +23,25 @@
     '<li><a href="' + site + 'knowledge-tree/branches/">Branches (Notes Graph)</a></li>' +
     '<li><a href="' + site + 'knowledge-tree/roots/">Roots (References)</a></li></ul></li>' +
     '<li><a class="fg-link" href="' + site + 'resume/">Resume</a></li>' +
-    '<li><a class="fg-link" href="' + site + 'my-story/">My Story</a></li>' +
-    '<li><a class="fg-link" href="' + site + 'hobbies/" aria-current="page">Hobbies</a></li>' +
+    '<li class="fg-has-menu"><button type="button" class="fg-link" id="fg-about-toggle" aria-haspopup="true" aria-expanded="false" aria-current="page">About Me <span aria-hidden="true">\u25be</span></button>' +
+    '<ul class="fg-menu" id="fg-about-menu" hidden>' +
+    '<li><a href="' + site + 'my-story/">My Story</a></li>' +
+    '<li><a href="' + site + 'hobbies/" style="color:#a88bfa">Hobbies</a></li></ul></li>' +
     '</ul></nav></div>';
   document.body.insertBefore(header, document.body.firstChild);
 
-  var btn = header.querySelector("#fg-tree-toggle");
-  var menu = header.querySelector("#fg-tree-menu");
-  var li = btn.closest(".fg-has-menu");
-  var set = function (open) { btn.setAttribute("aria-expanded", String(open)); menu.hidden = !open; };
-  var canHover = window.matchMedia("(hover: hover)").matches;
-  btn.addEventListener("click", function () { set(canHover ? true : menu.hidden); });
-  if (canHover) {
-    li.addEventListener("mouseenter", function () { set(true); });
-    li.addEventListener("mouseleave", function () { set(false); });
-  }
-  document.addEventListener("click", function (e) { if (!li.contains(e.target)) set(false); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { set(false); btn.focus(); } });
+  var groups = Array.prototype.map.call(header.querySelectorAll(".fg-has-menu"), function (li) {
+    var btn = li.querySelector("button");
+    var menu = li.querySelector(".fg-menu");
+    var set = function (open) { btn.setAttribute("aria-expanded", String(open)); menu.hidden = !open; };
+    var canHover = window.matchMedia("(hover: hover)").matches;
+    btn.addEventListener("click", function () { set(canHover ? true : menu.hidden); });
+    if (canHover) {
+      li.addEventListener("mouseenter", function () { set(true); });
+      li.addEventListener("mouseleave", function () { set(false); });
+    }
+    return { li: li, btn: btn, set: set };
+  });
+  document.addEventListener("click", function (e) { groups.forEach(function (g) { if (!g.li.contains(e.target)) g.set(false); }); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") groups.forEach(function (g) { g.set(false); }); });
 })();

@@ -10,6 +10,14 @@ const tree = [
   { href: '/knowledge-tree/branches/', label: 'Branches (Notes Graph)' },
   { href: '/knowledge-tree/roots/', label: 'Roots (References)' },
 ];
+const about = [
+  { href: '/my-story/', label: 'My Story' },
+  { href: '/hobbies/', label: 'Hobbies' },
+];
+const menus = [
+  { id: 'tree', label: 'Knowledge Tree', key: 'knowledge', items: tree },
+  { id: 'about', label: 'About Me', key: 'about', items: about },
+];
 ---
 <!doctype html>
 <html lang="en">
@@ -30,36 +38,50 @@ const tree = [
         <a class="wordmark" href={url('/')} aria-label="Felipe Graca, home">Felipe Graca</a>
         <nav class="primary-nav" aria-label="Primary">
           <ul>
-            <li class="has-menu">
-              <button type="button" class="nav-link nav-button" id="tree-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="tree-menu" aria-current={section === 'knowledge' ? 'page' : undefined}>
-                Knowledge Tree <span class="caret" aria-hidden="true">▾</span>
-              </button>
-              <ul class="menu" id="tree-menu" hidden>
-                {tree.map((t) => (
-                  <li><a href={url(t.href)} aria-current={path.startsWith(url(t.href)) ? 'page' : undefined}>{t.label}</a></li>
-                ))}
-              </ul>
-            </li>
+            {menus.filter((m) => m.id === 'tree').map((m) => (
+              <li class="has-menu">
+                <button type="button" class="nav-link nav-button" id={`${m.id}-toggle`} data-menu-toggle aria-haspopup="true" aria-expanded="false" aria-controls={`${m.id}-menu`} aria-current={section === m.key ? 'page' : undefined}>
+                  {m.label} <span class="caret" aria-hidden="true">▾</span>
+                </button>
+                <ul class="menu" id={`${m.id}-menu`} hidden>
+                  {m.items.map((t) => (
+                    <li><a href={url(t.href)} aria-current={path.startsWith(url(t.href)) ? 'page' : undefined}>{t.label}</a></li>
+                  ))}
+                </ul>
+              </li>
+            ))}
             <li><a class="nav-link" href={url('/resume/')} aria-current={section === 'resume' ? 'page' : undefined}>Resume</a></li>
-            <li><a class="nav-link" href={url('/my-story/')} aria-current={section === 'my-story' ? 'page' : undefined}>My Story</a></li>
-            <li><a class="nav-link" href={url('/hobbies/')} aria-current={section === 'hobbies' ? 'page' : undefined}>Hobbies</a></li>
+            {menus.filter((m) => m.id === 'about').map((m) => (
+              <li class="has-menu">
+                <button type="button" class="nav-link nav-button" id={`${m.id}-toggle`} data-menu-toggle aria-haspopup="true" aria-expanded="false" aria-controls={`${m.id}-menu`} aria-current={['my-story', 'hobbies'].includes(section) ? 'page' : undefined}>
+                  {m.label} <span class="caret" aria-hidden="true">▾</span>
+                </button>
+                <ul class="menu" id={`${m.id}-menu`} hidden>
+                  {m.items.map((t) => (
+                    <li><a href={url(t.href)} aria-current={path.startsWith(url(t.href)) ? 'page' : undefined}>{t.label}</a></li>
+                  ))}
+                </ul>
+              </li>
+            ))}
           </ul>
         </nav>
       </div>
     </header>
     <script>
-      const btn = document.getElementById('tree-toggle') as HTMLButtonElement;
-      const menu = document.getElementById('tree-menu') as HTMLElement;
-      const li = btn.closest('.has-menu') as HTMLElement;
-      const set = (open: boolean) => { btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open; };
       const canHover = matchMedia('(hover: hover)').matches;
-      btn.addEventListener('click', () => set(canHover ? true : menu.hidden));
-      if (canHover) {
-        li.addEventListener('mouseenter', () => set(true));
-        li.addEventListener('mouseleave', () => set(false));
-      }
-      document.addEventListener('click', (e) => { if (!li.contains(e.target as Node)) set(false); });
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { set(false); btn.focus(); } });
+      const groups = Array.from(document.querySelectorAll('.has-menu')).map((li) => {
+        const btn = li.querySelector('[data-menu-toggle]') as HTMLButtonElement;
+        const menu = li.querySelector('.menu') as HTMLElement;
+        const set = (open: boolean) => { btn.setAttribute('aria-expanded', String(open)); menu.hidden = !open; };
+        btn.addEventListener('click', () => set(canHover ? true : menu.hidden));
+        if (canHover) {
+          li.addEventListener('mouseenter', () => set(true));
+          li.addEventListener('mouseleave', () => set(false));
+        }
+        return { li, btn, set };
+      });
+      document.addEventListener('click', (e) => groups.forEach((g) => { if (!g.li.contains(e.target as Node)) g.set(false); }));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') groups.forEach((g) => { if (g.btn.getAttribute('aria-expanded') === 'true') { g.set(false); g.btn.focus(); } }); });
     </script>
     <main id="main" tabindex="-1"><slot /></main>
     <footer class="site-footer">
