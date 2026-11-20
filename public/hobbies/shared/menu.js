@@ -31,7 +31,6 @@
   }).join("");
 
   header.innerHTML = `
-    <a class="brand" href="${root}index.html">Pantry</a>
     <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
     <nav class="site-nav">${groups}</nav>`;
 
