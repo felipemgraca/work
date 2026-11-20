@@ -172,3 +172,37 @@ footer.site-footer { border-top: 1px solid var(--line); padding-block: 2rem; col
 
 .feed-item > .feed-date { margin: 0 0 .6rem; }
 .essay-card.has-cover .essay-card__body { text-shadow: 0 1px 10px rgba(0,0,0,.7); }
+
+/* Essays: larger in-body headings */
+.prose--essay h2 { font-size: 1.9rem; margin-top: 2.4em; }
+.prose--essay h3 { font-size: 1.55rem; line-height: 1.25; margin-top: 2.2em; }
+
+/* Recommendations */
+.recs { display: grid; gap: 1.6rem; margin-top: 1.4rem; }
+.rec { margin: 0; padding: 0 0 0 1.1rem; border-left: 3px solid var(--accent-strong); break-inside: avoid; }
+.rec blockquote { margin: 0 0 .7rem; padding: 0; border: 0; color: var(--text); }
+.rec blockquote p { margin: 0; }
+.rec figcaption { display: grid; gap: .1rem; font-size: .92rem; color: var(--muted); }
+.rec figcaption strong { color: var(--text); font-size: 1rem; }
+.rec .rec-context { font-size: .84rem; opacity: .85; }
+
+/* Print / PDF: light, ink-friendly resume */
+@page { size: Letter; margin: 14mm 15mm; }
+@media print {
+  :root { color-scheme: light; --bg: #fff; --surface: #f4f2fa; --line: #d9d5e6; --text: #15131c; --muted: #4a4658; --accent: #5b21b6; --accent-strong: #6c31e3; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { background: #fff !important; color: #15131c; font-size: 10.5pt; line-height: 1.5; }
+  .site-header, .site-footer, .skip-link, .no-print { display: none !important; }
+  main { padding: 0; min-height: 0; }
+  .prose-wrap, .prose-wrap > * { width: 100%; max-width: none; }
+  .eyebrow { display: none; }
+  .page-title { font-size: 24pt; margin-bottom: .1rem; }
+  .page-lede { color: var(--muted); margin-bottom: 1.2rem; font-size: 10pt; }
+  .prose a { color: var(--accent); text-decoration: none; }
+  .resume h2 { color: var(--accent); font-size: 10.5pt; margin: 1.3em 0 .5em; break-after: avoid; }
+  .resume h3 { font-size: 11.5pt; margin-top: 1em; break-after: avoid; }
+  .prose p, .prose li { orphans: 3; widows: 3; }
+  .prose li { break-inside: avoid; }
+  .rec { border-left-color: var(--accent); }
+  .rec blockquote p { font-size: 10pt; }
+}

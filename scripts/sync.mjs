@@ -221,7 +221,7 @@ function bulletSummaries(md) {
 function skillsFirst(md) {
   const at = md.indexOf('## Skills');
   if (at === -1) return md;
-  const skills = md.slice(at).trim();
+  const skills = md.slice(at).trim().replace(/^Others listed:\s*/m, ''); // drop the "Others listed:" label
   const others = md.slice(0, at).trim();
   return skills + '\n\n' + others;
 }

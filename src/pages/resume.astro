@@ -1,16 +1,33 @@
 ---
 import Base from '../layouts/Base.astro';
-import { resumeHtml, profile, site } from '../lib';
+import { url, resumeHtml, profile, site } from '../lib';
+import recommendations from '../../content/recommendations.json';
 ---
 <Base title="Resume" section="resume" description={`Resume of Felipe Graca. ${profile.headline}`}>
   <div class="prose-wrap">
     <p class="eyebrow">Resume</p>
     <h1 class="page-title">Felipe Graca</h1>
     <p class="page-lede">{profile.headline}<br />{profile.location} · <a href={site.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a></p>
+    <p class="actions no-print" style="margin: -1.25rem 0 2rem">
+      <a class="btn btn--primary" href={url('/Felipe-Graca-Resume.pdf')} download>Download PDF</a>
+    </p>
     <div class="prose resume">
       <h2>About</h2>
       <div set:html={profile.aboutHtml} />
       <div set:html={resumeHtml} />
+      <h2>Recommendations</h2>
+      <div class="recs">
+        {recommendations.map((r) => (
+          <figure class="rec">
+            <blockquote><p>{r.text}</p></blockquote>
+            <figcaption>
+              <strong>{r.name}</strong>
+              <span>{r.role}</span>
+              <span class="rec-context">{r.context}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
     </div>
   </div>
 </Base>
