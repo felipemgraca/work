@@ -1,0 +1,38 @@
+---
+import fs from 'node:fs';
+import Base from '../../layouts/Base.astro';
+import { url } from '../../lib';
+
+const count = (file: string) => {
+  try { return JSON.parse(fs.readFileSync(`public/hobbies/${file}`, 'utf8')).length as number; } catch { return 0; }
+};
+const hobbies = [
+  { id: 'coffee', title: 'Coffee', accent: '#E8834A', blurb: 'Beans tried, brew recipes, gear, and cafes worth visiting.', count: `${count('coffee/data/beans.json')} beans`, bg: 'coffee/images/backgrounds/hero-beans.jpg',
+    links: [['Beans', 'index.html'], ['Recipes', 'recipes.html'], ['Equipment', 'equipment.html'], ['About', 'about.html']] },
+  { id: 'wine', title: 'Wine', accent: '#C0355A', blurb: "Wines tried at home, tasting notes, and a wishlist of what's next.", count: `${count('wine/data/wines.json')} wines`, bg: 'wine/images/backgrounds/hero-wine.jpg',
+    links: [['Wines', 'index.html'], ['About', 'about.html']] },
+  { id: 'books', title: 'Books', accent: '#E0A64A', blurb: 'Books read, being read, and waiting on the to-read list.', count: `${count('books/data/books.json')} books read`, bg: 'books/images/backgrounds/hero-books.jpg',
+    links: [['Read', 'index.html'], ['To Read', 'tbr.html']] },
+  { id: 'vinyls', title: 'Vinyls', accent: '#2FA79B', blurb: 'Records collected, by genre, artist, decade, and origin.', count: `${count('vinyls/data/vinyls.json')} records`, bg: 'vinyls/images/backgrounds/hero-vinyl.jpg',
+    links: [['Vinyls', 'index.html'], ['About', 'about.html']] },
+];
+---
+<Base title="Hobbies" section="hobbies">
+  <div class="container">
+    <p class="eyebrow">Hobbies</p>
+    <h1 class="page-title">Hobbies</h1>
+    <p class="page-lede">Personal archives of the things I collect and learn about.</p>
+    <div class="hobby-grid">
+      {hobbies.map((h) => (
+        <div class="hobby-tile" style={`--tile-accent:${h.accent}; background-image: linear-gradient(180deg, rgba(0,0,0,.15) 0%, rgba(0,0,0,.92) 100%), url('${url('/hobbies/' + h.bg)}')`}>
+          <h2><a href={url(`/hobbies/${h.id}/index.html`)}>{h.title}</a></h2>
+          <p>{h.blurb}</p>
+          <span class="hobby-count">{h.count}</span>
+          <div class="hobby-links">
+            {h.links.map(([label, page]) => <a href={url(`/hobbies/${h.id}/${page}`)}>{label}</a>)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</Base>

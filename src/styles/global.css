@@ -230,3 +230,15 @@ footer.site-footer { border-top: 1px solid var(--line); padding-block: 2rem; col
 .gp-row input[type=checkbox] { accent-color: var(--accent-strong, #8b5cf6); }
 .gp-actions { display: flex; flex-direction: column; gap: .5rem; margin-bottom: .6rem; }
 .gp-actions .toggle { padding: .4rem .7rem; font-size: .85rem; width: 100%; }
+
+/* Hobbies */
+.hobby-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1.1rem; margin-top: 1.5rem; }
+.hobby-tile { display: flex; flex-direction: column; justify-content: flex-end; min-height: 18rem; padding: 1.3rem; border: 1px solid var(--line); border-radius: 12px; background-size: cover; background-position: center; }
+.hobby-tile h2 { margin: 0 0 .3rem; font-size: 1.5rem; }
+.hobby-tile h2 a { color: var(--text); text-decoration: none; }
+.hobby-tile h2 a:hover { color: var(--tile-accent); }
+.hobby-tile p { margin: 0 0 .6rem; color: #d8d3ea; font-size: .95rem; }
+.hobby-count { color: var(--tile-accent); font-weight: 600; font-size: .9rem; }
+.hobby-links { display: flex; flex-wrap: wrap; gap: .4rem 1rem; margin-top: .7rem; }
+.hobby-links a { color: var(--muted); font-size: .9rem; text-decoration: none; border-bottom: 1px solid transparent; }
+.hobby-links a:hover { color: var(--tile-accent); border-color: var(--tile-accent); }
