@@ -242,3 +242,21 @@ footer.site-footer { border-top: 1px solid var(--line); padding-block: 2rem; col
 .hobby-links { display: flex; flex-wrap: wrap; gap: .4rem 1rem; margin-top: .7rem; }
 .hobby-links a { color: var(--muted); font-size: .9rem; text-decoration: none; border-bottom: 1px solid transparent; }
 .hobby-links a:hover { color: var(--tile-accent); border-color: var(--tile-accent); }
+
+/* Mobile burger navigation */
+.nav-burger { display: none; margin-left: auto; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; padding: 0; background: none; border: 1px solid var(--line); border-radius: 8px; color: var(--text); cursor: pointer; }
+.nav-burger:hover { border-color: var(--accent-strong); color: var(--accent); }
+.nav-burger .b-close { display: none; }
+.nav-burger.is-open .b-open { display: none; }
+.nav-burger.is-open .b-close { display: inline; }
+@media (max-width: 700px) {
+  .site-header__inner { flex-wrap: wrap; }
+  .nav-burger { display: inline-flex; }
+  .primary-nav { display: none; width: 100%; }
+  .primary-nav.open { display: block; padding-bottom: .5rem; }
+  .primary-nav > ul { flex-direction: column; align-items: flex-start; gap: .1rem; }
+  .primary-nav > ul > li { width: 100%; }
+  .primary-nav .nav-link { padding-block: .6rem; }
+  .primary-nav .caret { display: none; }
+  .primary-nav .has-menu .menu, .primary-nav .menu[hidden] { position: static; display: block; min-width: 0; padding: 0 0 .3rem 1rem; background: none; border: 0; box-shadow: none; }
+}

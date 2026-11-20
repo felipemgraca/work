@@ -36,7 +36,10 @@ const menus = [
     <header class="site-header">
       <div class="container site-header__inner">
         <a class="wordmark" href={url('/')} aria-label="Felipe Graca, home">Felipe Graca</a>
-        <nav class="primary-nav" aria-label="Primary">
+        <button type="button" class="nav-burger" id="nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path class="b-open" d="M4 7h16M4 12h16M4 17h16"/><path class="b-close" d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary">
           <ul>
             {menus.filter((m) => m.id === 'tree').map((m) => (
               <li class="has-menu">
@@ -68,6 +71,14 @@ const menus = [
       </div>
     </header>
     <script>
+      const burger = document.getElementById('nav-burger') as HTMLButtonElement;
+      const primary = document.getElementById('primary-nav') as HTMLElement;
+      burger.addEventListener('click', () => {
+        const open = !primary.classList.contains('open');
+        primary.classList.toggle('open', open);
+        burger.classList.toggle('is-open', open);
+        burger.setAttribute('aria-expanded', String(open));
+      });
       const canHover = matchMedia('(hover: hover)').matches;
       const groups = Array.from(document.querySelectorAll('.has-menu')).map((li) => {
         const btn = li.querySelector('[data-menu-toggle]') as HTMLButtonElement;
