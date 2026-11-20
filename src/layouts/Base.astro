@@ -53,7 +53,6 @@ const menus = [
                 </ul>
               </li>
             ))}
-            <li><a class="nav-link" href={url('/resume/')} aria-current={section === 'resume' ? 'page' : undefined}>Resume</a></li>
             {menus.filter((m) => m.id === 'about').map((m) => (
               <li class="has-menu">
                 <button type="button" class="nav-link nav-button" id={`${m.id}-toggle`} data-menu-toggle aria-haspopup="true" aria-expanded="false" aria-controls={`${m.id}-menu`} aria-current={['my-story', 'hobbies'].includes(section) ? 'page' : undefined}>
@@ -66,6 +65,7 @@ const menus = [
                 </ul>
               </li>
             ))}
+            <li><a class="nav-link" href={url('/resume/')} aria-current={section === 'resume' ? 'page' : undefined}>Resume</a></li>
           </ul>
         </nav>
       </div>
