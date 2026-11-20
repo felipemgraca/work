@@ -144,7 +144,9 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       links = allLinks
         .map((l) => ({ source: endId(l.source), target: endId(l.target) }))
         .filter((l) => visible.has(l.source) && visible.has(l.target));
-      nodes = allNodes.filter((n) => visible.has(n.id));
+      const linked = new Set<string>();
+      links.forEach((l) => { linked.add(l.source); linked.add(l.target); });
+      nodes = allNodes.filter((n) => visible.has(n.id) && (n.kind !== 'references' || linked.has(n.id)));
       nodes.forEach((n) => (n.degree = 0));
       links.forEach((l) => { byId.get(l.source).degree++; byId.get(l.target).degree++; });
       nbrs = new Map(nodes.map((n) => [n.id, new Set([n.id])]));
