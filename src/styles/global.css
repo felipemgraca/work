@@ -123,7 +123,14 @@ main { padding-block: 3.5rem 5rem; min-height: 70vh; }
 .legend span::before { content: ''; display: inline-block; width: .7rem; height: .7rem; border-radius: 50%; margin-right: .4rem; vertical-align: -1px; }
 .legend .l-note::before { background: var(--accent); }
 .legend .l-ref::before { background: #000; border: 2px solid #fff; }
-.graph-tip { position: absolute; pointer-events: none; background: rgba(13,11,20,.95); border: 1px solid var(--accent-strong); border-radius: 8px; padding: .4rem .7rem; font-size: .9rem; max-width: 22rem; opacity: 0; transition: opacity .12s; }
+.graph-tip { position: absolute; z-index: 4; pointer-events: none; background: rgba(13,11,20,.97); border: 1px solid var(--accent-strong); border-radius: 10px; padding: .7rem .9rem; font-size: .9rem; width: min(26rem, calc(100% - 1rem)); max-height: calc(100% - 1rem); overflow: hidden; opacity: 0; transition: opacity .12s; }
+.graph-tip .tip-title { font-weight: 700; font-size: 1rem; line-height: 1.35; }
+.graph-tip .tip-body { margin-top: .5rem; color: var(--muted); font-size: .88rem; line-height: 1.55; }
+.graph-tip .tip-body:empty { display: none; }
+.graph-tip .tip-body > :first-child { margin-top: 0; }
+.graph-tip .tip-body > :last-child { margin-bottom: 0; }
+.graph-tip .tip-body p, .graph-tip .tip-body ul, .graph-tip .tip-body ol { margin: .5rem 0; }
+.graph-tip .tip-body ul, .graph-tip .tip-body ol { padding-left: 1.2rem; }
 .graph-hint { color: var(--muted); font-size: .88rem; margin-top: .75rem; }
 .node-list { margin-top: 2.5rem; }
 
