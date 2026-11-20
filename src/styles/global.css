@@ -109,7 +109,7 @@ main { padding-block: 3.5rem 5rem; min-height: 70vh; }
 .resume p strong { color: var(--text); }
 
 /* Graph */
-.graph-shell { position: relative; border: 1px solid var(--line); border-radius: 12px; background: radial-gradient(ellipse at center, #120d22 0%, #000 75%); overflow: hidden; }
+.graph-shell { position: relative; border: 1px solid var(--line); border-radius: 12px; background: #000; overflow: hidden; }
 #graph { width: 100%; height: clamp(420px, 78vh, 800px); display: block; cursor: grab; touch-action: none; }
 @media (max-width: 700px) { #graph { height: clamp(300px, 100vw, 420px); } }
 #graph:active { cursor: grabbing; }
