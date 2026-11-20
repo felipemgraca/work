@@ -13,14 +13,17 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       <input class="graph-search" id="graph-search" type="search" placeholder="Search notes…" aria-label="Search notes" />
       <div class="legend">
         <span class="l-note">Note</span>
-        <button type="button" id="fit-view" class="toggle">Reset view</button>
-        <button type="button" id="toggle-books" class="toggle" aria-pressed="false">Show book references</button>
       </div>
     </div>
     <div class="graph-shell">
       <svg id="graph" role="img" aria-label="Knowledge graph of notes"></svg>
       <button type="button" class="toggle graph-gear" id="gp-toggle" aria-expanded="false" aria-controls="gp">Settings</button>
-      <div class="graph-panel" id="gp" hidden></div>
+      <div class="graph-panel" id="gp" hidden>
+        <div class="gp-actions">
+          <button type="button" id="fit-view" class="toggle">Reset view</button>
+          <button type="button" id="toggle-books" class="toggle" aria-pressed="false">Show book references</button>
+        </div>
+      </div>
       <div class="graph-tip" id="graph-tip"></div>
     </div>
     <p class="graph-hint">Drag to move, hold Ctrl or ⌘ and scroll (or pinch) to zoom, hover to highlight connections.</p>
@@ -301,7 +304,6 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       panel.toggleAttribute('hidden', !open);
       gear.setAttribute('aria-expanded', String(open));
     });
-    if (window.matchMedia('(min-width: 900px)').matches) { panel.removeAttribute('hidden'); gear.setAttribute('aria-expanded', 'true'); }
 
     applyForces(false);
     update();

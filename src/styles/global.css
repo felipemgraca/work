@@ -211,7 +211,8 @@ footer.site-footer { border-top: 1px solid var(--line); padding-block: 2rem; col
 .graph-gear { position: absolute; top: .6rem; right: .6rem; z-index: 3; padding: .35rem .8rem; font-size: .85rem; background: rgba(13,11,20,.9); }
 .graph-panel { position: absolute; top: 3rem; right: .6rem; z-index: 3; width: min(17rem, calc(100% - 1.2rem)); max-height: calc(100% - 3.6rem); overflow: auto; background: rgba(13,11,20,.96); border: 1px solid var(--line); border-radius: 12px; padding: .7rem .9rem .9rem; }
 .graph-panel[hidden] { display: none; }
-.gp-head { display: flex; justify-content: flex-end; margin-bottom: .2rem; }
+.gp-head { display: flex; margin-bottom: .4rem; }
+.gp-head .toggle { width: 100%; }
 .gp-head .toggle, .gp-sec .toggle { padding: .3rem .7rem; font-size: .8rem; }
 .gp-sec { border-top: 1px solid var(--line); padding: .2rem 0 .6rem; }
 .gp-sec summary { cursor: pointer; padding: .55rem 0; font-weight: 600; }
@@ -220,3 +221,5 @@ footer.site-footer { border-top: 1px solid var(--line); padding-block: 2rem; col
 .gp-row output { color: var(--muted); font-variant-numeric: tabular-nums; }
 .gp-row input[type=range] { width: 100%; accent-color: var(--accent-strong, #8b5cf6); }
 .gp-row input[type=checkbox] { accent-color: var(--accent-strong, #8b5cf6); }
+.gp-actions { display: flex; flex-direction: column; gap: .5rem; margin-bottom: .6rem; }
+.gp-actions .toggle { padding: .4rem .7rem; font-size: .85rem; width: 100%; }
