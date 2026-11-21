@@ -8,13 +8,13 @@ const count = (file: string) => {
 };
 const hobbies = [
   { id: 'coffee', title: 'Coffee', accent: '#E8834A', blurb: 'Beans tried, brew recipes, gear, and cafes worth visiting.', count: `${count('coffee/data/beans.json')} beans`, bg: 'coffee/images/backgrounds/hero-beans.jpg',
-    links: [['Beans', 'index.html'], ['Recipes', 'recipes.html'], ['Equipment', 'equipment.html'], ['About', 'about.html']] },
+    links: [['Beans', 'index.html'], ['Recipes', 'recipes.html'], ['Equipment', 'equipment.html']] },
   { id: 'wine', title: 'Wine', accent: '#C0355A', blurb: "Wines tried at home, tasting notes, and a wishlist of what's next.", count: `${count('wine/data/wines.json')} wines`, bg: 'wine/images/backgrounds/hero-wine.jpg',
-    links: [['Wines', 'index.html'], ['About', 'about.html']] },
-  { id: 'books', title: 'Books', accent: '#E0A64A', blurb: 'Books read, being read, and waiting on the to-read list.', count: `${count('books/data/books.json')} books read`, bg: 'books/images/backgrounds/hero-books.jpg',
-    links: [['Read', 'index.html'], ['To Read', 'tbr.html']] },
+    links: [['Wines', 'index.html']] },
+  { id: 'books', title: 'Books', accent: '#E0A64A', blurb: 'Books I have read, with notes and highlights.', count: `${count('books/data/books.json')} books read`, bg: 'books/images/backgrounds/hero-books.jpg',
+    links: [['Read', 'index.html']] },
   { id: 'vinyls', title: 'Vinyls', accent: '#2FA79B', blurb: 'Records collected, by genre, artist, decade, and origin.', count: `${count('vinyls/data/vinyls.json')} records`, bg: 'vinyls/images/backgrounds/hero-vinyl.jpg',
-    links: [['Vinyls', 'index.html'], ['About', 'about.html']] },
+    links: [['Vinyls', 'index.html']] },
 ];
 ---
 <Base title="Hobbies" section="hobbies">
