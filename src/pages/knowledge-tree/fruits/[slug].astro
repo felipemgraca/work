@@ -8,7 +8,7 @@ const { post } = Astro.props;
 ---
 <Base title={post.title} section="knowledge">
   <article class="prose-wrap">
-    <a class="back" href={url('/knowledge-tree/fruits/')}>← Fruits (Essays)</a>
+    <a class="back" href={url('/knowledge-tree/fruits/')}>← Essays (Fruits)</a>
     <h1 class="page-title">{post.title}</h1>
     {post.subtitle && <p class="page-lede">{post.subtitle}</p>}
     {post.date && <p class="feed-date" style="margin:-1.5rem 0 2rem">{fmtDate(post.date)}</p>}

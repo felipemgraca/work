@@ -8,7 +8,7 @@ const { item } = Astro.props;
 ---
 <Base title={item.title} section="knowledge">
   <article class="prose-wrap">
-    <a class="back" href={url('/knowledge-tree/roots/')}>← Roots (References)</a>
+    <a class="back" href={url('/knowledge-tree/roots/')}>← References (Roots)</a>
     <h1 class="page-title">{item.title}</h1>
     {item.backlinks.length > 0 && (
       <aside class="backlinks">

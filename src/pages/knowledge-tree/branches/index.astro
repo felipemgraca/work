@@ -5,10 +5,10 @@ const noteHtml = new Map(notes.map((n: any) => [n.slug, n.html]));
 const nodes = graph.nodes.map((n: any) => ({ ...n, href: url(pathFor(n.kind, n.slug)), html: n.kind === 'notes' ? noteHtml.get(n.slug) ?? '' : '' }));
 const payload = JSON.stringify({ nodes, links: graph.links });
 ---
-<Base title="Branches (Notes Graph)" section="knowledge">
+<Base title="Notes (Branches)" section="knowledge">
   <div class="container">
     <p class="eyebrow">Knowledge Tree</p>
-    <h1 class="page-title">Branches (Notes Graph)</h1>
+    <h1 class="page-title">Notes (Branches)</h1>
     <p class="page-lede">My slip-box as a knowledge graph. Each dot is an idea in my own words; lines are links between them. Click a dot to read it.</p>
     <div class="graph-toolbar">
       <input class="graph-search" id="graph-search" type="search" placeholder="Search notes…" aria-label="Search notes" />

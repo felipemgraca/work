@@ -5,10 +5,10 @@ const books = [...references]
   .map((r: any) => ({ ...r, count: r.backlinks.length }))
   .sort((a: any, b: any) => b.count - a.count || a.title.localeCompare(b.title));
 ---
-<Base title="Roots (References)" section="knowledge">
+<Base title="References (Roots)" section="knowledge">
   <div class="prose-wrap">
     <p class="eyebrow">Knowledge Tree</p>
-    <h1 class="page-title">Roots (References)</h1>
+    <h1 class="page-title">References (Roots)</h1>
     <p class="page-lede">Books I have read and highlighted, ordered by how many of my notes cite them.</p>
     <ul class="entry-list">
       {books.map((r: any) => (
