@@ -216,6 +216,8 @@ footer.site-footer { border-top: 1px solid var(--line); padding-block: 2rem; col
 
 /* Graph settings panel */
 .graph-gear { position: absolute; top: .6rem; right: .6rem; z-index: 3; padding: .35rem .8rem; font-size: .85rem; background: rgba(13,11,20,.9); }
+.graph-zoom { position: absolute; bottom: .6rem; right: .6rem; z-index: 3; display: flex; flex-direction: column; gap: .35rem; }
+.graph-zoom .toggle { width: 2.1rem; height: 2.1rem; padding: 0; font-size: 1.15rem; line-height: 1; background: rgba(13,11,20,.9); }
 .graph-panel { position: absolute; top: 3rem; right: .6rem; z-index: 3; width: min(17rem, calc(100% - 1.2rem)); max-height: calc(100% - 3.6rem); overflow: auto; background: rgba(13,11,20,.96); border: 1px solid var(--line); border-radius: 12px; padding: .7rem .9rem .9rem; }
 .graph-panel[hidden] { display: none; }
 .gp-head { display: flex; margin-bottom: .4rem; }

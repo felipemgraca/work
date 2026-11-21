@@ -25,6 +25,10 @@ const payload = JSON.stringify({ nodes, links: graph.links });
           <button type="button" id="toggle-books" class="toggle" aria-pressed="false">Show book references</button>
         </div>
       </div>
+      <div class="graph-zoom" role="group" aria-label="Zoom">
+        <button type="button" class="toggle" id="zoom-in" aria-label="Zoom in">+</button>
+        <button type="button" class="toggle" id="zoom-out" aria-label="Zoom out">−</button>
+      </div>
       <div class="graph-tip" id="graph-tip"></div>
     </div>
     <p class="graph-hint">Drag to move, hold Ctrl or ⌘ and scroll (or pinch) to zoom, hover to highlight connections.</p>
@@ -231,6 +235,9 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       update();
     });
     document.getElementById('fit-view')!.addEventListener('click', () => fit(true));
+    const zoomBy = (f: number) => (svg as any).transition().duration(200).call(zoomer.scaleBy, f);
+    document.getElementById('zoom-in')!.addEventListener('click', () => zoomBy(1.5));
+    document.getElementById('zoom-out')!.addEventListener('click', () => zoomBy(1 / 1.5));
 
     document.getElementById('graph-search')!.addEventListener('input', (e) => {
       const q = (e.target as HTMLInputElement).value.trim().toLowerCase();
