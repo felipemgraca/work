@@ -9,7 +9,7 @@ const books = [...references]
   <div class="prose-wrap">
     <p class="eyebrow">Knowledge Tree</p>
     <h1 class="page-title">References (Roots)</h1>
-    <p class="page-lede">Books I have read and highlighted, ordered by how many of my notes cite them.</p>
+    <p class="page-lede">Books I have read, highlighted, and written notes about. Ordered by how many of my notes are linked to them.</p>
     <ul class="entry-list">
       {books.map((r: any) => (
         <li><a href={url(pathFor('references', r.slug))}><span class="entry-title">{r.title}</span><span class="entry-meta">({r.count} {r.count === 1 ? 'note' : 'notes'})</span></a></li>
