@@ -257,6 +257,7 @@ footer.site-footer { border-top: 1px solid var(--line); padding-block: 2rem; col
   .primary-nav > ul { flex-direction: column; align-items: flex-start; gap: .1rem; }
   .primary-nav > ul > li { width: 100%; }
   .primary-nav .nav-link { padding-block: .6rem; }
-  .primary-nav .caret { display: none; }
-  .primary-nav .has-menu .menu, .primary-nav .menu[hidden] { position: static; display: block; min-width: 0; padding: 0 0 .3rem 1rem; background: none; border: 0; box-shadow: none; }
+  .primary-nav .nav-button { width: 100%; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+  .primary-nav .has-menu .menu { position: static; display: block; min-width: 0; padding: 0 0 .3rem 1rem; background: none; border: 0; box-shadow: none; }
+  .primary-nav .has-menu .menu[hidden] { display: none; }
 }
