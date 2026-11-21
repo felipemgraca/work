@@ -274,5 +274,28 @@
       "Honeysuckle"
     ],
     "grinderSetting": "16 (espresso)"
+  },
+  {
+    "name": "Santa Lucia",
+    "rating": 4.0,
+    "roaster": "Rosso Coffee Roasters",
+    "roasterUrl": "https://www.rossocoffeeroasters.com/",
+    "productUrl": "https://www.rossocoffeeroasters.com/products/santa-lucia",
+    "image": "images/beans/santa-lucia.png",
+    "origin": {
+      "country": "Brazil",
+      "region": "Carmo de Minas, Minas Gerais",
+      "producer": "Helcio Carneiro Pinto, Fazenda Santa Lucia"
+    },
+    "varietal": "Yellow Bourbon",
+    "process": "Pulped Natural",
+    "roast": "Medium",
+    "caffeine": "Regular",
+    "tasteProfile": [
+      "Milk Chocolate",
+      "Marzipan",
+      "Roasted Almonds"
+    ],
+    "grinderSetting": "16 (espresso)"
   }
 ]
