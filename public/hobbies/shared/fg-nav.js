@@ -26,7 +26,7 @@
     '<li class="fg-has-menu"><button type="button" class="fg-link" id="fg-about-toggle" aria-haspopup="true" aria-expanded="false" aria-current="page">About Me <span aria-hidden="true">\u25be</span></button>' +
     '<ul class="fg-menu" id="fg-about-menu" hidden>' +
     '<li><a href="' + site + 'my-story/">My Story</a></li>' +
-    '<li><a href="' + site + 'hobbies/" style="color:#a88bfa">Hobbies</a></li></ul></li>' +
+    '<li><a href="' + site + 'hobbies/" style="color:#a88bfa">My Hobbies</a></li></ul></li>' +
     '<li><a class="fg-link" href="' + site + 'resume/">Resume</a></li>' +
     '</ul></nav></div>';
   document.body.insertBefore(header, document.body.firstChild);
