@@ -59,16 +59,17 @@ const payload = JSON.stringify({ nodes, links: graph.links });
     let nbrs = new Map<string, Set<string>>();
 
     const r = (n: any) => (3.5 + Math.sqrt(n.degree) * 1.5) * S.nodeSize;
+    const rr = (n: any) => r(n) / Math.pow(zk, 0.6);
     const svg = select(svgEl);
     const root = svg.append('g');
-    const linkLayer = root.append('g').attr('stroke', '#6c31e3').attr('stroke-opacity', 0.6);
+    const linkLayer = root.append('g').attr('stroke', '#9a9aa6').attr('stroke-opacity', 0.55);
     const nodeLayer = root.append('g');
     const labelLayer = root.append('g');
     svg.append('defs').append('marker').attr('id', 'arrow').attr('viewBox', '0 0 10 10').attr('refX', 10).attr('refY', 5)
       .attr('markerWidth', 7).attr('markerHeight', 7).attr('markerUnits', 'userSpaceOnUse').attr('orient', 'auto')
       .append('path').attr('d', 'M0,0L10,5L0,10z').attr('fill', '#a88bfa');
 
-    const DEFAULTS: any = { arrows: false, fade: 0.9, nodeSize: 0.4, linkThickness: 1, center: 0.5, repel: 3, linkForce: 1, linkDistance: 60 };
+    const DEFAULTS: any = { arrows: false, fade: 0.9, nodeSize: 0.4, linkThickness: 0.8, center: 0.5, repel: 3, linkForce: 1, linkDistance: 60 };
     const S: any = { ...DEFAULTS };
     let zk = 1;
     let hl: Set<string> | null = null;
@@ -124,19 +125,23 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       const f = Math.max(0, Math.min(1, (zk - S.fade * 2) / 0.3));
       // Labels stay hidden at the overview zoom; they show on hover/search, or when zoomed in.
       labels.attr('opacity', (d: any) => (hl ? (hl.has(d.id) ? 1 : f * 0.12) : f));
+      // Keep labels a constant size on screen, so zooming in spreads them apart instead of enlarging them.
+      if (node) node.select('circle').attr('r', rr);
+      labels.attr('font-size', 12 / zk).attr('stroke-width', 3 / zk)
+        .attr('transform', (d: any) => `translate(${d.x},${d.y + rr(d) + 14 / zk})`);
     }
     function applyStyle() {
       if (!link) return;
       link.attr('stroke-width', S.linkThickness).attr('marker-end', S.arrows ? 'url(#arrow)' : null);
-      node.select('circle').attr('r', r);
+      node.select('circle').attr('r', rr);
       draw();
     }
     function highlight(ids: Set<string> | null) {
       hl = ids;
       node.select('circle').attr('opacity', (d: any) => (!ids || ids.has(d.id) ? 1 : 0.12));
       applyLabels();
-      link.attr('stroke-opacity', (d: any) => (!ids ? 0.6 : ids.has(d.source.id) && ids.has(d.target.id) ? 0.95 : 0.05))
-        .attr('stroke', (d: any) => (ids && ids.has(d.source.id) && ids.has(d.target.id) ? '#a88bfa' : '#6c31e3'));
+      link.attr('stroke-opacity', (d: any) => (!ids ? 0.55 : ids.has(d.source.id) && ids.has(d.target.id) ? 0.95 : 0.05))
+        .attr('stroke', (d: any) => (ids && ids.has(d.source.id) && ids.has(d.target.id) ? '#d9ccff' : '#9a9aa6'));
     }
 
     function update() {
@@ -153,7 +158,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       nbrs = new Map(nodes.map((n) => [n.id, new Set([n.id])]));
       links.forEach((l) => { nbrs.get(l.source)!.add(l.target); nbrs.get(l.target)!.add(l.source); });
 
-      link = linkLayer.selectAll('line').data(links).join('line').attr('stroke-width', S.linkThickness).attr('marker-end', S.arrows ? 'url(#arrow)' : null);
+      link = linkLayer.selectAll('line').data(links).join('line').style('vector-effect', 'non-scaling-stroke').attr('stroke-width', S.linkThickness).attr('marker-end', S.arrows ? 'url(#arrow)' : null);
       node = nodeLayer.selectAll('a').data(nodes, (d: any) => d.id).join(
         (enter: any) => {
           const a = enter.append('a').attr('href', (d: any) => d.href).style('cursor', 'pointer');
@@ -162,9 +167,10 @@ const payload = JSON.stringify({ nodes, links: graph.links });
         },
       );
       node.select('circle')
-        .attr('r', r)
-        .attr('fill', (d: any) => (d.kind === 'references' ? '#000' : '#a88bfa'))
-        .attr('stroke', (d: any) => (d.kind === 'references' ? '#fff' : '#d9ccff'))
+        .attr('r', rr)
+        .style('vector-effect', 'non-scaling-stroke')
+        .attr('fill', (d: any) => (d.kind === 'references' ? '#000' : '#b4b4bf'))
+        .attr('stroke', (d: any) => (d.kind === 'references' ? '#fff' : '#b4b4bf'))
         .attr('stroke-width', (d: any) => (d.kind === 'references' ? 2 : 1));
       node.call(dragger);
       node
@@ -180,13 +186,13 @@ const payload = JSON.stringify({ nodes, links: graph.links });
         })
         .on('mouseleave', () => { highlight(null); tip.style.opacity = '0'; });
       labels = labelLayer.selectAll('text').data(nodes, (d: any) => d.id).join('text')
-        .attr('text-anchor', 'middle').attr('font-size', 13).attr('fill', '#d8d3ea')
+        .attr('text-anchor', 'middle').attr('font-size', 12).attr('fill', '#8d8d99')
         .attr('stroke', '#000').attr('stroke-width', 3).attr('stroke-linejoin', 'round').attr('paint-order', 'stroke')
         .style('pointer-events', 'none');
       labels.each(function (d: any) {
         const t = select(this as SVGTextElement);
         t.selectAll('tspan').remove();
-        wrap(d.title, 24).forEach((line, i) => t.append('tspan').attr('x', 0).attr('dy', i === 0 ? 0 : 15).text(line));
+        wrap(d.title, 24).forEach((line, i) => t.append('tspan').attr('x', 0).attr('dy', i === 0 ? '0' : '1.15em').text(line));
       });
 
       sim.nodes(nodes);
@@ -205,12 +211,12 @@ const payload = JSON.stringify({ nodes, links: graph.links });
     function draw() {
       const end = (d: any) => {
         if (!S.arrows) return [d.target.x, d.target.y];
-        const dx = d.target.x - d.source.x, dy = d.target.y - d.source.y, len = Math.hypot(dx, dy) || 1, off = r(d.target) + 2;
+        const dx = d.target.x - d.source.x, dy = d.target.y - d.source.y, len = Math.hypot(dx, dy) || 1, off = rr(d.target) + 2;
         return [d.target.x - (dx / len) * off, d.target.y - (dy / len) * off];
       };
       link.attr('x1', (d: any) => d.source.x).attr('y1', (d: any) => d.source.y).attr('x2', (d: any) => end(d)[0]).attr('y2', (d: any) => end(d)[1]);
       node.attr('transform', (d: any) => `translate(${d.x},${d.y})`);
-      labels.attr('transform', (d: any) => `translate(${d.x},${d.y + r(d) + 14})`);
+      labels.attr('transform', (d: any) => `translate(${d.x},${d.y + rr(d) + 14 / zk})`);
     }
     sim.on('tick', draw);
 
