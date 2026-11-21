@@ -93,7 +93,9 @@ function convert(item, kind) {
 const render = (md) => marked.parse(md, { gfm: true, breaks: false });
 
 const notesOut = notes.map((n) => ({ ...n, md: convert(n, 'notes') }));
-const refsOut = refs.map((r) => ({ ...r, md: convert(r, 'references') }));
+// Books that no note links to are not published (neither in References nor in the graph).
+const citedByNotes = (r) => [...(backlinks.get(`references:${r.slug}`) || [])].some((k) => k.startsWith('notes:'));
+const refsOut = refs.filter(citedByNotes).map((r) => ({ ...r, md: convert(r, 'references') }));
 const postsOut = posts.map((p) => {
   const md = convert(p, 'posts');
   return { ...p, md, images: p.images || [] };
