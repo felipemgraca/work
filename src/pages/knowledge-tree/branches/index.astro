@@ -31,7 +31,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       </div>
       <div class="graph-tip" id="graph-tip"></div>
     </div>
-    <p class="graph-hint">Drag to move, hold Ctrl or ⌘ and scroll (or pinch) to zoom, hover to highlight connections.</p>
+    <p class="graph-hint">Drag to move, use + and − (or hold Ctrl or ⌘ and scroll, or pinch) to zoom, hover to highlight connections.</p>
     <section class="node-list" aria-labelledby="all-notes">
       <h2 id="all-notes" class="eyebrow">All notes</h2>
       <ul class="entry-list">
@@ -118,7 +118,8 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       const padX = 80, padY = 60;
       const x0 = Math.min(...xs) - padX, x1 = Math.max(...xs) + padX;
       const y0 = Math.min(...ys) - padY, y1 = Math.max(...ys) + padY + 40;
-      const k = Math.min(width / (x1 - x0), height / (y1 - y0), 1.6);
+      // Open zoomed in enough for the note titles to show (they fade in from S.fade * 2); zoom out with the - button.
+      const k = Math.min(Math.max(Math.min(width / (x1 - x0), height / (y1 - y0), 1.6), S.fade * 2 + 0.3), 4);
       const tx = -((x0 + x1) / 2) * k, ty = -((y0 + y1) / 2) * k;
       const target = zoomIdentity.translate(tx, ty).scale(k);
       if (animate) (svg as any).transition().duration(450).call(zoomer.transform, target); else (svg as any).call(zoomer.transform, target);
