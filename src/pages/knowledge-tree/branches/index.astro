@@ -62,7 +62,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
     const rr = (n: any) => r(n) / Math.pow(zk, 0.6);
     const svg = select(svgEl);
     const root = svg.append('g');
-    const linkLayer = root.append('g').attr('stroke', '#9a9aa6').attr('stroke-opacity', 0.55);
+    const linkLayer = root.append('g').attr('stroke', '#8a63f0').attr('stroke-opacity', 0.75);
     const nodeLayer = root.append('g');
     const labelLayer = root.append('g');
     svg.append('defs').append('marker').attr('id', 'arrow').attr('viewBox', '0 0 10 10').attr('refX', 10).attr('refY', 5)
@@ -140,8 +140,8 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       hl = ids;
       node.select('circle').attr('opacity', (d: any) => (!ids || ids.has(d.id) ? 1 : 0.12));
       applyLabels();
-      link.attr('stroke-opacity', (d: any) => (!ids ? 0.55 : ids.has(d.source.id) && ids.has(d.target.id) ? 0.95 : 0.05))
-        .attr('stroke', (d: any) => (ids && ids.has(d.source.id) && ids.has(d.target.id) ? '#d9ccff' : '#9a9aa6'));
+      link.attr('stroke-opacity', (d: any) => (!ids ? 0.75 : ids.has(d.source.id) && ids.has(d.target.id) ? 0.95 : 0.05))
+        .attr('stroke', (d: any) => (ids && ids.has(d.source.id) && ids.has(d.target.id) ? '#c4b0ff' : '#8a63f0'));
     }
 
     function update() {
@@ -169,8 +169,8 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       node.select('circle')
         .attr('r', rr)
         .style('vector-effect', 'non-scaling-stroke')
-        .attr('fill', (d: any) => (d.kind === 'references' ? '#000' : '#b4b4bf'))
-        .attr('stroke', (d: any) => (d.kind === 'references' ? '#fff' : '#b4b4bf'))
+        .attr('fill', (d: any) => (d.kind === 'references' ? '#000' : '#a88bfa'))
+        .attr('stroke', (d: any) => (d.kind === 'references' ? '#fff' : '#d9ccff'))
         .attr('stroke-width', (d: any) => (d.kind === 'references' ? 2 : 1));
       node.call(dragger);
       node
@@ -186,7 +186,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
         })
         .on('mouseleave', () => { highlight(null); tip.style.opacity = '0'; });
       labels = labelLayer.selectAll('text').data(nodes, (d: any) => d.id).join('text')
-        .attr('text-anchor', 'middle').attr('font-size', 12).attr('fill', '#8d8d99')
+        .attr('text-anchor', 'middle').attr('font-size', 12).attr('fill', '#a79fc4')
         .attr('stroke', '#000').attr('stroke-width', 3).attr('stroke-linejoin', 'round').attr('paint-order', 'stroke')
         .style('pointer-events', 'none');
       labels.each(function (d: any) {
