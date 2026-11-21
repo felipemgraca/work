@@ -189,6 +189,9 @@ const aboutFile = path.resolve('content/resume-about.md');
 const aboutMd = fs.existsSync(aboutFile)
   ? fs.readFileSync(aboutFile, 'utf8').trim()
   : (cut.match(/## About\n([\s\S]*?)\n## Experience/) || [])[1]?.trim() || '';
+// My Story page: the body of one vault note, rendered as-is.
+const storyFile = path.join(VAULT, '03 - Roots/Field Notes/2026-11-19 - my story for my website.md');
+const storyMd = matter(fs.readFileSync(storyFile, 'utf8')).content.trim();
 // Display names used on the site (the vault note keeps the long forms).
 const renames = [
   ['UniCEUB - University Center of Brasília (Centro Universitário de Brasília)', 'University Center of Brasília'],
@@ -230,6 +233,7 @@ const data = {
   site: { name: 'Felipe Graca', linkedin: 'https://www.linkedin.com/in/felipemenesesgraca/' },
   // Site headline (shorter than the LinkedIn one in the vault note).
   profile: { headline: 'Analytics Manager | WPP @ Ford | Building marketing intelligence & AI-BI solutions', location, aboutHtml: render(aboutMd) },
+  storyHtml: render(storyMd),
   resumeHtml: marked.parse(skillsFirst(bulletSummaries(rest)), { gfm: true, breaks: true }), // keep line breaks (role / dates)
   writing: writingEntries,
   notes: noteEntries,
