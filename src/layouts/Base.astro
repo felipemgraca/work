@@ -5,6 +5,9 @@ interface Props { title?: string; description?: string; section?: string }
 const { title, description = 'Felipe Graca: analytics, business intelligence and a public knowledge garden.', section = '' } = Astro.props;
 const full = title ? `${title} | ${site.name}` : site.name;
 const path = Astro.url.pathname;
+// One consistent link preview (WhatsApp, LinkedIn, etc.) for every page.
+const shareDescription = 'Felipe Graca: analytics, business intelligence and a public knowledge garden.';
+const shareImage = 'https://felipegraca.com/og-image.png';
 const tree = [
   { href: '/knowledge-tree/fruits/', label: 'Essays' },
   { href: '/knowledge-tree/branches/', label: 'Notes' },
@@ -28,8 +31,18 @@ const menus = [
     <meta name="description" content={description} />
     <meta name="theme-color" content="#000000" />
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
-    <meta property="og:title" content={full} />
-    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={site.name} />
+    <meta property="og:description" content={shareDescription} />
+    <meta property="og:url" content={`https://felipegraca.com${path}`} />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={site.name} />
+    <meta name="twitter:description" content={shareDescription} />
+    <meta name="twitter:image" content={shareImage} />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
