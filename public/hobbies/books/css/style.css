@@ -651,7 +651,7 @@ footer.site-footer {
   }
 
   .card-grid,
-  .  .dashboard {
+  .dashboard {
     grid-template-columns: 1fr;
   }
 }
