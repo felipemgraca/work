@@ -13,5 +13,6 @@ const { post } = Astro.props;
     {post.subtitle && <p class="page-lede">{post.subtitle}</p>}
     {post.date && <p class="feed-date" style="margin:-1.5rem 0 2rem">{fmtDate(post.date)}</p>}
     <div class="prose prose--essay" set:html={post.html} />
+    <iframe class="substack-embed" title="Subscribe to my Substack" src="https://byfelipegraca.substack.com/embed?transparent=1&light=1" width="360" height="150" style="border: 0; background: transparent; color-scheme: light; display: block; max-width: 100%; margin: 3rem 0 0 -12px" frameborder="0" scrolling="no" loading="lazy"></iframe>
   </article>
 </Base>
