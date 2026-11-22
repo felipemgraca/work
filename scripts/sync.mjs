@@ -49,6 +49,9 @@ const hrefFor = (t) => `/knowledge-tree/${t.kind === 'notes' ? 'branches' : 'roo
 const edges = new Set();
 const backlinks = new Map();
 
+// Essays whose card cover is not their first image: slug -> Attachments filename.
+const COVER_FILES = { 'i-left-law-to-become-an-analytics-manager': 'felipe_2026.png' };
+
 function convert(item, kind) {
   let md = item.content;
   // Embeds: essays keep their images (copied into public/); everywhere else embeds are dropped.
@@ -71,6 +74,7 @@ function convert(item, kind) {
     }
     const href = `@@BASE@@/images/essays/${name}`;
     item.images.push(href);
+    if (COVER_FILES[item.slug] === file) item.cover = href;
     return `![](${href})`;
   });
   md = md.replace(/\[\[([^\]]+)\]\]/g, (_, inner) => {
@@ -148,7 +152,7 @@ const writingEntries = postsOut
       slug: slugify(m ? m[2] : p.title),
       date: lastDate ? lastDate[1] : m ? m[1] : fm || null,
       subtitle,
-      cover: p.images[0] || null,
+      cover: p.cover || p.images[0] || null,
       excerpt: excerptBlock ? clip(plain(excerptBlock), 190) : '',
       html: render(rest.join('\n\n')),
     };
