@@ -13,13 +13,8 @@ const tree = [
   { href: '/knowledge-tree/branches/', label: 'Notes' },
   { href: '/knowledge-tree/roots/', label: 'References' },
 ];
-const about = [
-  { href: '/my-story/', label: 'Story' },
-  { href: '/hobbies/', label: 'Hobbies' },
-];
 const menus = [
   { id: 'tree', label: 'Knowledge Tree', key: 'knowledge', items: tree },
-  { id: 'about', label: 'About Me', key: 'about', items: about },
 ];
 ---
 <!doctype html>
@@ -66,18 +61,8 @@ const menus = [
                 </ul>
               </li>
             ))}
-            {menus.filter((m) => m.id === 'about').map((m) => (
-              <li class="has-menu">
-                <button type="button" class="nav-link nav-button" id={`${m.id}-toggle`} data-menu-toggle aria-haspopup="true" aria-expanded="false" aria-controls={`${m.id}-menu`} aria-current={['my-story', 'hobbies'].includes(section) ? 'page' : undefined}>
-                  {m.label} <span class="caret" aria-hidden="true">▾</span>
-                </button>
-                <ul class="menu" id={`${m.id}-menu`} hidden>
-                  {m.items.map((t) => (
-                    <li><a href={url(t.href)} aria-current={path.startsWith(url(t.href)) ? 'page' : undefined}>{t.label}</a></li>
-                  ))}
-                </ul>
-              </li>
-            ))}
+            <li><a class="nav-link" href={url('/hobbies/')} aria-current={section === 'hobbies' ? 'page' : undefined}>Personal Dashboards</a></li>
+            <li><a class="nav-link" href={url('/my-story/')} aria-current={section === 'my-story' ? 'page' : undefined}>My Story</a></li>
             <li><a class="nav-link" href={url('/resume/')} aria-current={section === 'resume' ? 'page' : undefined}>Resume</a></li>
           </ul>
         </nav>
