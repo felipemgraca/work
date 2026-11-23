@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { url, site } from '../lib';
+import nav from '../data/nav.json';
 interface Props { title?: string; description?: string; section?: string }
 const { title, description = 'Felipe Graca: analytics, business intelligence and a public knowledge garden.', section = '' } = Astro.props;
 const full = title ? `${title} | ${site.name}` : site.name;
@@ -8,14 +9,7 @@ const path = Astro.url.pathname;
 // One consistent link preview (WhatsApp, LinkedIn, etc.) for every page.
 const shareDescription = 'Felipe Graca: analytics, business intelligence and a public knowledge garden.';
 const shareImage = 'https://felipegraca.com/og-image.png';
-const tree = [
-  { href: '/knowledge-tree/fruits/', label: 'Essays' },
-  { href: '/knowledge-tree/branches/', label: 'Notes' },
-  { href: '/knowledge-tree/roots/', label: 'References' },
-];
-const menus = [
-  { id: 'tree', label: 'Knowledge Tree', key: 'knowledge', items: tree },
-];
+const menus = [{ id: 'tree', label: nav.tree.label, key: 'knowledge', items: nav.tree.items }];
 ---
 <!doctype html>
 <html lang="en">
@@ -61,9 +55,9 @@ const menus = [
                 </ul>
               </li>
             ))}
-            <li><a class="nav-link" href={url('/hobbies/')} aria-current={section === 'hobbies' ? 'page' : undefined}>Personal Dashboards</a></li>
-            <li><a class="nav-link" href={url('/my-story/')} aria-current={section === 'my-story' ? 'page' : undefined}>My Story</a></li>
-            <li><a class="nav-link" href={url('/resume/')} aria-current={section === 'resume' ? 'page' : undefined}>Resume</a></li>
+            {nav.links.map((l) => (
+              <li><a class="nav-link" href={url(l.href)} aria-current={section === l.section ? 'page' : undefined}>{l.label}</a></li>
+            ))}
           </ul>
         </nav>
       </div>
