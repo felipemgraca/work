@@ -68,14 +68,14 @@ const payload = JSON.stringify({ nodes, links: graph.links });
     const rr = (n: any) => r(n) / Math.pow(zk, 0.6);
     const svg = select(svgEl);
     const root = svg.append('g');
-    const linkLayer = root.append('g').attr('stroke', '#8a63f0').attr('stroke-opacity', 0.75);
+    const linkLayer = root.append('g').attr('stroke', '#8a63f0').attr('stroke-opacity', 0.35);
     const nodeLayer = root.append('g');
     const labelLayer = root.append('g');
     svg.append('defs').append('marker').attr('id', 'arrow').attr('viewBox', '0 0 10 10').attr('refX', 10).attr('refY', 5)
       .attr('markerWidth', 7).attr('markerHeight', 7).attr('markerUnits', 'userSpaceOnUse').attr('orient', 'auto')
       .append('path').attr('d', 'M0,0L10,5L0,10z').attr('fill', '#a88bfa');
 
-    const DEFAULTS: any = { arrows: false, fade: 0.3, nodeSize: 0.4, linkThickness: 0.8, center: 0.5, repel: 7, linkForce: 1, linkDistance: 100 };
+    const DEFAULTS: any = { arrows: false, fade: 0.15, nodeSize: 0.4, linkThickness: 0.8, center: 0.5, repel: 7, linkForce: 1, linkDistance: 100 };
     const S: any = { ...DEFAULTS };
     let zk = 1;
     let hl: Set<string> | null = null;
@@ -134,7 +134,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       labels.attr('opacity', (d: any) => (hl ? (hl.has(d.id) ? 1 : f * 0.12) : f));
       // Keep labels a constant size on screen, so zooming in spreads them apart instead of enlarging them.
       if (node) node.select('circle').attr('r', rr);
-      labels.attr('font-size', 11 / zk).attr('stroke-width', 3 / zk)
+      labels.attr('font-size', 11 / zk)
         .attr('transform', (d: any) => `translate(${d.x},${d.y + rr(d) + 14 / zk})`);
     }
     function applyStyle() {
@@ -147,7 +147,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       hl = ids;
       node.select('circle').attr('opacity', (d: any) => (!ids || ids.has(d.id) ? 1 : 0.12));
       applyLabels();
-      link.attr('stroke-opacity', (d: any) => (!ids ? 0.75 : ids.has(d.source.id) && ids.has(d.target.id) ? 0.95 : 0.05))
+      link.attr('stroke-opacity', (d: any) => (!ids ? 0.35 : ids.has(d.source.id) && ids.has(d.target.id) ? 0.7 : 0.04))
         .attr('stroke', (d: any) => (ids && ids.has(d.source.id) && ids.has(d.target.id) ? '#c4b0ff' : '#8a63f0'));
     }
 
@@ -193,8 +193,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
         })
         .on('mouseleave', () => { highlight(null); tip.style.opacity = '0'; });
       labels = labelLayer.selectAll('text').data(nodes, (d: any) => d.id).join('text')
-        .attr('text-anchor', 'middle').attr('font-size', 12).attr('fill', '#a79fc4')
-        .attr('stroke', '#000').attr('stroke-width', 3).attr('stroke-linejoin', 'round').attr('paint-order', 'stroke')
+        .attr('text-anchor', 'middle').attr('font-size', 12).attr('fill', '#fff')
         .style('pointer-events', 'none');
       labels.each(function (d: any) {
         const t = select(this as SVGTextElement);
