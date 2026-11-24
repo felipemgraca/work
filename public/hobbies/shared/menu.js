@@ -5,7 +5,7 @@
   const MENU = {
     coffee: [["Beans", "index.html"], ["Recipes", "recipes.html"], ["Equipment", "equipment.html"]],
     wine: [["Wines", "index.html"]],
-    books: [["Read", "index.html"]],
+    books: [["Books", "index.html"]],
     vinyls: [["Vinyls", "index.html"]]
   };
 
