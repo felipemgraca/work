@@ -75,7 +75,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       .attr('markerWidth', 7).attr('markerHeight', 7).attr('markerUnits', 'userSpaceOnUse').attr('orient', 'auto')
       .append('path').attr('d', 'M0,0L10,5L0,10z').attr('fill', '#a88bfa');
 
-    const DEFAULTS: any = { arrows: false, fade: 0.15, nodeSize: 0.4, linkThickness: 0.8, center: 0.5, repel: 7, linkForce: 1, linkDistance: 100 };
+    const DEFAULTS: any = { arrows: false, fade: 0.4, nodeSize: 0.4, linkThickness: 0.8, center: 0, repel: 7, linkForce: 1, linkDistance: 100 };
     const S: any = { ...DEFAULTS };
     let zk = 1;
     let hl: Set<string> | null = null;
@@ -86,8 +86,8 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       .force('charge', forceManyBody().strength(-80 * DEFAULTS.repel))
       .force('collide', forceCollide().radius(44).strength(1))
       .force('center', forceCenter(0, 0))
-      .force('x', forceX(0).strength(DEFAULTS.center * 0.03))
-      .force('y', forceY(0).strength(DEFAULTS.center * 0.2));
+      .force('x', forceX(0).strength(0.015 + DEFAULTS.center * 0.1))
+      .force('y', forceY(0).strength(0.1 + DEFAULTS.center * 0.1));
 
     function size() {
       const { width, height } = svgEl.getBoundingClientRect();
@@ -129,7 +129,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
 
     function applyLabels() {
       if (!labels) return;
-      const f = Math.max(0, Math.min(1, (zk - S.fade * 2) / 0.3));
+      const f = Math.max(0, Math.min(1, (zk - S.fade * 2) / 0.05));
       // Labels stay hidden at the overview zoom; they show on hover/search, or when zoomed in.
       labels.attr('opacity', (d: any) => (hl ? (hl.has(d.id) ? 1 : f * 0.12) : f));
       // Keep labels a constant size on screen, so zooming in spreads them apart instead of enlarging them.
@@ -249,8 +249,8 @@ const payload = JSON.stringify({ nodes, links: graph.links });
     function applyForces(restart = true) {
       (sim.force('link') as any).distance(S.linkDistance).strength(S.linkForce);
       (sim.force('charge') as any).strength(-80 * S.repel);
-      (sim.force('x') as any).strength(S.center * 0.03);
-      (sim.force('y') as any).strength(S.center * 0.2);
+      (sim.force('x') as any).strength(0.015 + S.center * 0.1);
+      (sim.force('y') as any).strength(0.1 + S.center * 0.1);
       if (restart) sim.alpha(0.6).restart();
     }
     let refitAfter = false;
