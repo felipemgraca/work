@@ -37,10 +37,11 @@ const readDir = (rel) => {
 };
 
 const notes = readDir('02 - Branches');
-const refs = readDir('03 - Roots/Books/Highlighted');
+// Every book in Books/ (including Highlighted/) is a candidate; it is published only once a note cites it.
+const refs = [...readDir('03 - Roots/Books'), ...readDir('03 - Roots/Books/Highlighted')];
 const posts = readDir('01 - Fruits');
 
-// Wikilink resolution: only notes and highlighted books are public.
+// Wikilink resolution: only notes and books are public (books only once a note cites them).
 const targets = new Map();
 for (const n of notes) targets.set(n.title.toLowerCase(), { kind: 'notes', ...n });
 for (const r of refs) targets.set(r.title.toLowerCase(), { kind: 'references', ...r });

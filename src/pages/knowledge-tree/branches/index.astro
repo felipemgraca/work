@@ -75,7 +75,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       .attr('markerWidth', 7).attr('markerHeight', 7).attr('markerUnits', 'userSpaceOnUse').attr('orient', 'auto')
       .append('path').attr('d', 'M0,0L10,5L0,10z').attr('fill', '#a88bfa');
 
-    const DEFAULTS: any = { arrows: false, fade: 0.9, nodeSize: 0.4, linkThickness: 0.8, center: 0.5, repel: 3, linkForce: 1, linkDistance: 60 };
+    const DEFAULTS: any = { arrows: false, fade: 0.3, nodeSize: 0.4, linkThickness: 0.8, center: 0.5, repel: 7, linkForce: 1, linkDistance: 100 };
     const S: any = { ...DEFAULTS };
     let zk = 1;
     let hl: Set<string> | null = null;
@@ -84,10 +84,10 @@ const payload = JSON.stringify({ nodes, links: graph.links });
     const sim = forceSimulation()
       .force('link', forceLink().id((d: any) => d.id).distance(DEFAULTS.linkDistance).strength(DEFAULTS.linkForce))
       .force('charge', forceManyBody().strength(-80 * DEFAULTS.repel))
-      .force('collide', forceCollide().radius(24).strength(1))
+      .force('collide', forceCollide().radius(44).strength(1))
       .force('center', forceCenter(0, 0))
-      .force('x', forceX(0).strength(DEFAULTS.center * 0.1))
-      .force('y', forceY(0).strength(DEFAULTS.center * 0.1));
+      .force('x', forceX(0).strength(DEFAULTS.center * 0.03))
+      .force('y', forceY(0).strength(DEFAULTS.center * 0.2));
 
     function size() {
       const { width, height } = svgEl.getBoundingClientRect();
@@ -120,8 +120,8 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       const padX = 80, padY = 60;
       const x0 = Math.min(...xs) - padX, x1 = Math.max(...xs) + padX;
       const y0 = Math.min(...ys) - padY, y1 = Math.max(...ys) + padY + 40;
-      // Open zoomed in enough for the note titles to show (they fade in from S.fade * 2); zoom out with the - button.
-      const k = Math.min(Math.max(Math.min(width / (x1 - x0), height / (y1 - y0), 1.6), S.fade * 2 + 0.3), 4);
+      // Fit the whole graph in view; note titles fade in from S.fade * 2 (about 0.6x zoom).
+      const k = Math.min(Math.max(Math.min(width / (x1 - x0), height / (y1 - y0), 1.6), 0.5), 4);
       const tx = -((x0 + x1) / 2) * k, ty = -((y0 + y1) / 2) * k;
       const target = zoomIdentity.translate(tx, ty).scale(k);
       if (animate) (svg as any).transition().duration(450).call(zoomer.transform, target); else (svg as any).call(zoomer.transform, target);
@@ -134,7 +134,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       labels.attr('opacity', (d: any) => (hl ? (hl.has(d.id) ? 1 : f * 0.12) : f));
       // Keep labels a constant size on screen, so zooming in spreads them apart instead of enlarging them.
       if (node) node.select('circle').attr('r', rr);
-      labels.attr('font-size', 12 / zk).attr('stroke-width', 3 / zk)
+      labels.attr('font-size', 11 / zk).attr('stroke-width', 3 / zk)
         .attr('transform', (d: any) => `translate(${d.x},${d.y + rr(d) + 14 / zk})`);
     }
     function applyStyle() {
@@ -199,7 +199,7 @@ const payload = JSON.stringify({ nodes, links: graph.links });
       labels.each(function (d: any) {
         const t = select(this as SVGTextElement);
         t.selectAll('tspan').remove();
-        wrap(d.title, 24).forEach((line, i) => t.append('tspan').attr('x', 0).attr('dy', i === 0 ? '0' : '1.15em').text(line));
+        wrap(d.title, 30).forEach((line, i) => t.append('tspan').attr('x', 0).attr('dy', i === 0 ? '0' : '1.15em').text(line));
       });
 
       sim.nodes(nodes);
@@ -250,8 +250,8 @@ const payload = JSON.stringify({ nodes, links: graph.links });
     function applyForces(restart = true) {
       (sim.force('link') as any).distance(S.linkDistance).strength(S.linkForce);
       (sim.force('charge') as any).strength(-80 * S.repel);
-      (sim.force('x') as any).strength(S.center * 0.1);
-      (sim.force('y') as any).strength(S.center * 0.1);
+      (sim.force('x') as any).strength(S.center * 0.03);
+      (sim.force('y') as any).strength(S.center * 0.2);
       if (restart) sim.alpha(0.6).restart();
     }
     let refitAfter = false;
