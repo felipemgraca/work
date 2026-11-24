@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import TreeNav from '../../../components/TreeNav.astro';
 import { url, pathFor, references } from '../../../lib';
 const books = [...references]
   .map((r: any) => ({ ...r, count: r.backlinks.length }))
@@ -7,6 +8,7 @@ const books = [...references]
 ---
 <Base title="References (Roots)" section="knowledge">
   <div class="prose-wrap">
+    <TreeNav current="/knowledge-tree/roots/" />
     <p class="eyebrow">Knowledge Tree</p>
     <h1 class="page-title">References (Roots)</h1>
     <p class="page-lede">Books I have read, highlighted, and written notes about. Ordered by how many of my notes are linked to them.</p>

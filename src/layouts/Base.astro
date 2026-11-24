@@ -9,7 +9,6 @@ const path = Astro.url.pathname;
 // One consistent link preview (WhatsApp, LinkedIn, etc.) for every page.
 const shareDescription = 'Felipe Graca: analytics, business intelligence and a public knowledge garden.';
 const shareImage = 'https://felipegraca.com/og-image.png';
-const menus = [{ id: 'tree', label: nav.tree.label, key: 'knowledge', items: nav.tree.items }];
 ---
 <!doctype html>
 <html lang="en">
@@ -43,18 +42,7 @@ const menus = [{ id: 'tree', label: nav.tree.label, key: 'knowledge', items: nav
         </button>
         <nav class="primary-nav" id="primary-nav" aria-label="Primary">
           <ul>
-            {menus.filter((m) => m.id === 'tree').map((m) => (
-              <li class="has-menu">
-                <button type="button" class="nav-link nav-button" id={`${m.id}-toggle`} data-menu-toggle aria-haspopup="true" aria-expanded="false" aria-controls={`${m.id}-menu`} aria-current={section === m.key ? 'page' : undefined}>
-                  {m.label} <span class="caret" aria-hidden="true">▾</span>
-                </button>
-                <ul class="menu" id={`${m.id}-menu`} hidden>
-                  {m.items.map((t) => (
-                    <li><a href={url(t.href)} aria-current={path.startsWith(url(t.href)) ? 'page' : undefined}>{t.label}</a></li>
-                  ))}
-                </ul>
-              </li>
-            ))}
+            <li><a class="nav-link" href={url(nav.tree.href)} aria-current={section === nav.tree.section ? 'page' : undefined}>{nav.tree.label}</a></li>
             {nav.links.map((l) => (
               <li><a class="nav-link" href={url(l.href)} aria-current={section === l.section ? 'page' : undefined}>{l.label}</a></li>
             ))}

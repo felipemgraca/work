@@ -2,14 +2,37 @@
   "tree": {
     "label": "Knowledge Tree",
     "items": [
-      { "href": "/knowledge-tree/fruits/", "label": "Essays" },
-      { "href": "/knowledge-tree/branches/", "label": "Notes" },
-      { "href": "/knowledge-tree/roots/", "label": "References" }
-    ]
+      {
+        "href": "/knowledge-tree/fruits/",
+        "label": "Essays"
+      },
+      {
+        "href": "/knowledge-tree/branches/",
+        "label": "Notes"
+      },
+      {
+        "href": "/knowledge-tree/roots/",
+        "label": "References"
+      }
+    ],
+    "href": "/knowledge-tree/",
+    "section": "knowledge"
   },
   "links": [
-    { "href": "/hobbies/", "label": "Personal Dashboards", "section": "hobbies" },
-    { "href": "/my-story/", "label": "My Story", "section": "my-story" },
-    { "href": "/resume/", "label": "Resume", "section": "resume" }
+    {
+      "href": "/hobbies/",
+      "label": "Personal Dashboards",
+      "section": "hobbies"
+    },
+    {
+      "href": "/my-story/",
+      "label": "My Story",
+      "section": "my-story"
+    },
+    {
+      "href": "/resume/",
+      "label": "Resume",
+      "section": "resume"
+    }
   ]
 }

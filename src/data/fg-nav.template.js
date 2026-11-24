@@ -14,8 +14,7 @@
 
   var esc = function (t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;"); };
   var here = location.pathname;
-  var menuHtml = '<li class="fg-has-menu"><button type="button" class="fg-link" id="fg-tree-toggle" aria-haspopup="true" aria-expanded="false">' + esc(NAV.tree.label) + ' <span aria-hidden="true">\u25be</span></button><ul class="fg-menu" id="fg-tree-menu" hidden>' +
-    NAV.tree.items.map(function (i) { return '<li><a href="' + site + i.href.slice(1) + '">' + esc(i.label) + '</a></li>'; }).join("") + '</ul></li>';
+  var menuHtml = '<li><a class="fg-link" href="' + site + NAV.tree.href.slice(1) + '"' + (here.indexOf(site + NAV.tree.href.slice(1)) === 0 ? ' aria-current="page"' : "") + '>' + esc(NAV.tree.label) + '</a></li>';
   var linksHtml = NAV.links.map(function (l) {
     var cur = here.indexOf(site + l.href.slice(1)) === 0 ? ' aria-current="page"' : "";
     return '<li><a class="fg-link" href="' + site + l.href.slice(1) + '"' + cur + '>' + esc(l.label) + '</a></li>';

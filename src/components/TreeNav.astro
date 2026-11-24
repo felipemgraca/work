@@ -1,0 +1,12 @@
+---
+import { url } from '../lib';
+import nav from '../data/nav.json';
+interface Props { current?: string }
+const { current = '' } = Astro.props;
+---
+<nav class="subnav" aria-label="Knowledge Tree">
+  <a href={url('/knowledge-tree/')} aria-current={current === 'overview' ? 'page' : undefined}>Knowledge Tree</a>
+  {nav.tree.items.map((t) => (
+    <a href={url(t.href)} aria-current={current === t.href ? 'page' : undefined}>{t.label}</a>
+  ))}
+</nav>
