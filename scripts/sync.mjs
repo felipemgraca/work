@@ -51,7 +51,10 @@ const edges = new Set();
 const backlinks = new Map();
 
 // Essays whose card cover is not their first image: slug -> Attachments filename.
-const COVER_FILES = { 'i-left-law-to-become-an-analytics-manager': 'felipe_2026.png' };
+const COVER_FILES = {
+  'i-left-law-to-become-an-analytics-manager': 'felipe_2026.png',
+  'how-i-went-from-excel-spreadsheets-to-power-bi-dashboards': 'Screenshot 2026-11-25 at 1.00.45 PM.png',
+};
 
 function convert(item, kind) {
   let md = item.content;
@@ -147,6 +150,8 @@ const writingEntries = postsOut
     const hasSubtitle = blocks[0] && !/\n/.test(blocks[0]) && blocks[0].length <= 200 && !/^[#!\-*>]/.test(blocks[0]);
     const subtitle = hasSubtitle ? plain(blocks[0]) : '';
     const rest = hasSubtitle ? blocks.slice(1) : blocks;
+    // Render from the untouched text: rejoining trimmed blocks would strip indentation inside code fences.
+    const restMd = hasSubtitle ? body.trim().slice(blocks[0].length).trim() : body.trim();
     const excerptBlock = rest.find((b) => !/^[#!\-*>\d]/.test(b));
     return {
       title: m ? m[2] : p.title,
@@ -155,7 +160,7 @@ const writingEntries = postsOut
       subtitle,
       cover: p.cover || p.images[0] || null,
       excerpt: excerptBlock ? clip(plain(excerptBlock), 190) : '',
-      html: render(rest.join('\n\n')),
+      html: render(restMd),
     };
   })
   .sort((a, b) => (b.date || '').localeCompare(a.date || ''));

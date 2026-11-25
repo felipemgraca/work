@@ -93,6 +93,8 @@ main { padding-block: 3.5rem 5rem; min-height: 70vh; }
 .prose mark { background: rgba(168,139,250,.28); color: var(--text); padding: .05em .2em; border-radius: 3px; }
 .prose blockquote { margin: 1.5em 0; padding-left: 1rem; border-left: 3px solid var(--accent-strong); color: var(--muted); }
 .prose code { background: var(--surface); padding: .1em .35em; border-radius: 4px; font-size: .92em; }
+.prose pre { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.2rem; margin: 1.5rem 0; font-size: .85rem; line-height: 1.55; }
+.prose pre code { background: none; padding: 0; border-radius: 0; font-size: 1em; }
 
 .back { display: inline-block; margin-bottom: 1.5rem; color: var(--muted); text-decoration: none; font-size: .95rem; }
 .back:hover { color: var(--accent); }
